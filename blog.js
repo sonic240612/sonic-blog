@@ -1,4 +1,6 @@
-/* 실험 기록(Blog) — posts/index.json에 적힌 Markdown 파일을 가져와 렌더링합니다.
+/* 실험 기록(Blog) — 게시 목록(posts/index.json)에 적힌 Markdown을 가져와 렌더링합니다.
+   본문과 이미지는 한 폴더에 둘 수 있습니다: posts/<slug>/index.md (+ posts/<slug>/photo.png).
+   목록은 `node tools/build-posts.mjs`가 폴더를 훑어 갱신합니다.
    외부 라이브러리 없이 frontmatter와 마크다운 부분집합을 HTML로 바꿉니다. */
 (() => {
   'use strict';
@@ -60,9 +62,26 @@
   const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
   const escapeHtml = text => String(text).replace(/[&<>]/g, ch => ESCAPES[ch]);
 
+  // 렌더링 중인 포스트가 들어 있는 폴더. 본문 안의 상대 이미지·링크를 여기 기준으로 푼니다.
+  let postBase = '';
+  const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+  const SAFE_SCHEME = /^(?:https?:|mailto:|file:|data:image\/)/i;
+
   function safeUrl(url) {
     const value = String(url).trim().replace(/"/g, '&quot;');
-    return /^(?:https?:|mailto:|#|\/|\.)/i.test(value) || !value.includes(':') ? value : '#';
+    if (!value) return '#';
+    if (value.startsWith('#')) return value;
+    if (SCHEME.test(value)) return SAFE_SCHEME.test(value) ? value : '#';
+    if (value.startsWith('//')) return value;
+    // 사이트 루트 기준 경로(/assets/…)는 http에서는 그대로, file://에서는 문서 기준 상대 경로로 바꿉니다.
+    if (value.startsWith('/')) return location.protocol === 'file:' ? value.slice(1) : value;
+    if (!postBase) return value;
+    // 상대 경로는 포스트 폴더에서 푼 뒤, 사이트 루트 기준 상대 경로로 되돌립니다.
+    try {
+      const root = new URL('.', location.href);
+      const resolved = new URL(value, new URL(postBase, location.href));
+      return resolved.href.startsWith(root.href) ? resolved.href.slice(root.href.length) : resolved.href;
+    } catch { return postBase + value; }
   }
   const isExternal = url => /^(?:https?:|mailto:)/i.test(url);
 
@@ -196,7 +215,8 @@
     return { html, next: i };
   }
 
-  function renderMarkdown(source) {
+  function renderMarkdown(source, base = postBase) {
+    postBase = base;
     const lines = String(source).replace(/\r\n?/g, '\n').split('\n');
     const html = [];
     let i = 0;
@@ -288,7 +308,10 @@
 
   function buildPost(file, raw) {
     const { meta, body: text } = parseFrontMatter(raw);
-    const slug = file.replace(/\.md$/i, '');
+    const noMd = file.replace(/\.md$/i, '');
+    const parts = noMd.split('/');
+    // posts/<slug>/index.md 면 폴더 이름이 slug, posts/<slug>.md 면 파일 이름이 slug.
+    const slug = parts.length > 1 && parts[parts.length - 1] === 'index' ? parts.slice(0, -1).join('/') : noMd;
     const firstHeading = /^ {0,3}#\s+(.+)$/m.exec(text);
     const title = meta.title || (firstHeading && firstHeading[1].trim()) || slug;
     let content = text.trim();
@@ -299,6 +322,7 @@
     return {
       file,
       slug,
+      base: DIR + noMd.replace(/[^/]*$/, ''),
       title,
       date,
       tags,
@@ -442,7 +466,7 @@
       }
       postTags.appendChild(item);
     });
-    postBody.innerHTML = renderMarkdown(post.content);
+    postBody.innerHTML = renderMarkdown(post.content, post.base);
     renderPostNav(post);
     document.title = post.title + ' · Blog';
   }

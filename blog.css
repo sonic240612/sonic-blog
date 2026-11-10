@@ -280,7 +280,14 @@ body[data-view="post"] .glass-intro { display: none; }
 }
 .prose td.align-center, .prose th.align-center { text-align: center; }
 .prose td.align-right, .prose th.align-right { text-align: right; font-variant-numeric: tabular-nums; }
-.prose img { max-width: 100%; border-radius: 14px; }
+/* 본문 이미지는 포스트 폴더에 함께 두며, 폭만 맞춰 깔끔하게 놓습니다. */
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 14px;
+}
 
 @media (max-width: 640px) {
   .post { gap: 16px; }

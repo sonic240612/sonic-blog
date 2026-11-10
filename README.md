@@ -68,7 +68,16 @@ Liquid Glass는 Apple의 네이티브 렌더러가 아닌 웹 재현입니다. C
 
 ## 실험 기록 추가하기
 
-1. `posts/<slug>.md` 파일을 만듭니다 (`slug`는 주소 `#/blog/<slug>`가 됩니다).
+1. 글 폴더를 만듭니다: `posts/<slug>/` (`slug`가 주소 `#/blog/<slug>`가 됩니다). 안에 `index.md`를 넣고, 그 글에서 쓰는 이미지는 같은 폴더에 함께 둡니다.
+
+```text
+posts/
+  strata-qwen38-benchmark/
+    index.md
+    bench-voxel.png      ← 본문에서 ![복셀 벤치마크](bench-voxel.png)
+```
+
+   본문만 둘 일은 예전처럼 `posts/<slug>.md` 하나로 두어도 됩니다(둘 다 게시 대상입니다).
 2. 파일 맨 위에 frontmatter를 적습니다.
 
 ```markdown
@@ -82,13 +91,29 @@ summary: 목록 카드에 한 줄로 표시될 요약.
 본문 마크다운…
 ```
 
-3. `posts/index.json` 배열에 파일 이름을 추가합니다 (최신순 정렬이 기본이지만, 순서는 정렬 버튼이 결정하므로 파일명 순서와 무관합니다).
-4. 미리보기 사본을 갱신합니다: `node tools/build-posts.mjs`
+3. 게시 목록을 갱신합니다: `node tools/build-posts.mjs`
+   - `posts/*/index.md`와 `posts/*.md`를 자동으로 훑어서 `posts/index.json`(브라우저가 읽는 게시 목록)과 `posts/posts.js`(`file://` 미리보기 사본)을 다시 씁니다.
+   - `index.json`에 직접 적어 둔 항목은 그대로 보존해 합집합으로 만듭니다. 특정 글만 숨길 때는 파일을 지우지 않고 목록에서 빼면 되고, 목록에 있는데 파일이 없는 항목은 경고 후 빠집니다. slug가 겹치면 경고하고 비정상 종료 코드를 남깁니다.
+   - 목록 순서는 정렬에 영향을 주지 않습니다(Newest / Oldest가 frontmatter의 `date` 기준).
+4. 미리보기를 새로고침합니다. `file://`로 여는 경우엔 Markdown을 고칠 때마다 3단계를 다시 실행해야 반영됩니다.
 5. (선택) Blog 필터 단추를 추가하려면 `blog.js` 상단의 `CATEGORIES = []`에 태그 이름을 적습니다. 포스트 frontmatter의 `tags`와 연결되어 목록 필터로 동작하고, 포스트 헤더의 태그도 클릭 가능한 링크로 바뀝니다. 등록되지 않은 태그는 이름만 표시되고, 저장된 필터 값이 목록에 없으면 `All`로 되돌아갑니다.
+
+### 이미지는 포스트 폴더에
+
+본문에서 `![설명](photo.png)`처럼 파일명만 쓰면 그 글 폴더를 기준으로 해석됩니다.
+
+| Markdown에서 쓴 경로 | 실제로 불러오는 파일 |
+| --- | --- |
+| `![설명](photo.png)` | `posts/<slug>/photo.png` |
+| `![설명](../shared.png)` | `posts/shared.png` |
+| `![설명](/assets/…)` | 사이트 루트 기준 (서버·`file://` 모두 동작) |
+| `![설명](https://…)` | 그대로 외부에서 |
+
+이미지는 `display: block`·`max-width: 100%`로 폭만 맞춰 둥근 모서리로 놓이고 `loading="lazy"`로 늦게 불러오며, 캡션은 그리지 않습니다(`alt`는 대체 텍스트로만 쓰입니다). `![x](javascript:…)` 같은 위험한 경로와 태그 안의 `onerror=`는 예전처럼 무력화됩니다.
 
 지원하는 마크다운 문법: 제목(`#`~`######`), 구분선(`---`), 인용(`>`), 순서·비순서 목록, 표(`:---:` 정렬, 칸 안에서 `<br>`), 강조·기울임·취소선, 인라인 코드와 언어 표시 펜스(` ```mermaid `), 링크·이미지. HTML은 이스케이프되므로 `<br>`만 허용됩니다.
 
 ## 로컬에서 보기
 
-- 서버로 여는 경우(권장): 사이트 폴더에서 `python -m http.server` 실행 후 `http://localhost:8000` 접속. 포스트는 `posts/*.md`를 바로 읽습니다.
+- 서버로 여는 경우(권장): 사이트 폴더에서 `python -m http.server` 실행 후 `http://localhost:8000` 접속. 포스트는 `posts/<slug>/index.md`(또는 `posts/<slug>.md`)를 바로 읽습니다.
 - `index.html`을 더블클릭해 여는 경우(`file://`)에는 브라우저가 `fetch`를 차단하므로, `posts/posts.js`(위 4단계에서 생성된 미리보기 사본)를 사용합니다. Markdown을 수정한 뒤 사본을 갱신하지 않으면 이전 내용이 보입니다.
