@@ -1,6 +1,6 @@
 # 프로젝트 모음집
 
-**🔗 GitHub Pages:** https://sonic240612.github.io/sonic-blog/ (아래 «GitHub Pages로 배포하기» 참고) · **기존 Vercel:** https://projects-portal-beta.vercel.app
+**🔗 https://sonic240612.github.io/sonic-blog/**
 
 제가 만든 서비스들을 한 번에 확인할 수 있는 포털 페이지입니다.
 
@@ -8,23 +8,23 @@
 
 게임과 재미 중심 프로젝트
 
-| 프로젝트 | 설명 | GitHub | Vercel |
-|----------|------|--------|--------|
-| open-survivor | 뱀서류 생존 게임 | [바로가기](https://github.com/sonic240612/open-survivor) | [바로가기](https://open-survivor.vercel.app) |
-| LADDER | 사다리 타기 게임 | [바로가기](https://github.com/sonic240612/LADDER) | [바로가기](https://ladder-roulette.vercel.app) |
-| TikaTuka | 주사위 보드게임 | [바로가기](https://github.com/sonic240612/TikaTuka) | [바로가기](https://tikatuka-one.vercel.app) |
-| Mars Panic!!! | 비공개 프로젝트 | - | - |
-| iF | AI 캐릭터 채팅 & 인터랙티브 스토리텔링 플랫폼 | [바로가기](https://github.com/sonic240612/iF) | [바로가기](https://if-chat-plum.vercel.app) |
-| beatsync | 실시간 멀티플레이어 음악 퀴즈 & 타임라인 카드 배틀 웹 게임 | [바로가기](https://github.com/sonic240612/beatsync) | - |
+| 프로젝트 | 설명 | GitHub |
+| ---------- | ------ | -------- |
+| open-survivor | 뱀서류 생존 게임 | [바로가기](https://github.com/sonic240612/open-survivor) |
+| LADDER | 사다리 타기 게임 | [바로가기](https://github.com/sonic240612/LADDER) |
+| TikaTuka | 주사위 보드게임 | [바로가기](https://github.com/sonic240612/TikaTuka) |
+| Mars Panic!!! | 비공개 프로젝트 | - |
+| iF | AI 캐릭터 채팅 & 인터랙티브 스토리텔링 플랫폼 | [바로가기](https://github.com/sonic240612/iF) |
+| beatsync | 실시간 멀티플레이어 음악 퀴즈 & 타임라인 카드 배틀 웹 게임 | [바로가기](https://github.com/sonic240612/beatsync) |
 
 ## Tools
 
 실용적인 도구 프로젝트
 
-| 프로젝트 | 설명 | GitHub | Vercel |
-|----------|------|--------|--------|
-| 어디가?(WhereTo?) | 랜덤 장소 추천 서비스 | [바로가기](https://github.com/sonic240612/whereto) | [바로가기](https://whereto-swart.vercel.app) |
-| PixelCircle | 픽셀 아트용 정밀 픽셀 원형 생성기 | [바로가기](https://github.com/sonic240612/pixel-circle) | [바로가기](https://pixel-circle.vercel.app) |
+| 프로젝트 | 설명 | GitHub |
+| ---------- | ------ | -------- |
+| 어디가?(WhereTo?) | 랜덤 장소 추천 서비스 | [바로가기](https://github.com/sonic240612/whereto) |
+| PixelCircle | 픽셀 아트용 정밀 픽셀 원형 생성기 | [바로가기](https://github.com/sonic240612/pixel-circle) |
 
 ## Lab
 
@@ -39,11 +39,11 @@ AI 에이전트와 협업 방식을 탐구하는 실험적 프로젝트
 
 일상과 생산성 프로젝트
 
-| 프로젝트 | 설명 | GitHub | Vercel |
-|----------|------|--------|--------|
-| HueWorld | 실시간 글로벌 무드 맵 | [바로가기](https://github.com/sonic240612/HueWorld) | [바로가기](https://hueworld.vercel.app) |
-| zen_pebble | 디지털 디톡스 & 인내심 테스트 | [바로가기](https://github.com/sonic240612/zen_pebble) | [바로가기](https://zen-pebble.vercel.app) |
-| Focus Forest | Pomodoro 타이머 & 스케줄 플래너 | [바로가기](https://github.com/sonic240612/Focus-Forest) | [바로가기](https://focus-forest-jet.vercel.app) |
+| 프로젝트 | 설명 | GitHub |
+| ---------- | ------ | -------- |
+| HueWorld | 실시간 글로벌 무드 맵 | [바로가기](https://github.com/sonic240612/HueWorld) |
+| zen_pebble | 디지털 디톡스 & 인내심 테스트 | [바로가기](https://github.com/sonic240612/zen_pebble) |
+| Focus Forest | Pomodoro 타이머 & 스케줄 플래너 | [바로가기](https://github.com/sonic240612/Focus-Forest) |
 
 ## 기능
 
@@ -66,99 +66,8 @@ Liquid Glass는 Apple의 네이티브 렌더러가 아닌 웹 재현입니다. C
 
 디자인 참고: [Meet Liquid Glass (WWDC25)](https://developer.apple.com/videos/play/wwdc2025/219/), [Apple HIG — Materials](https://developer.apple.com/design/human-interface-guidelines/materials).
 
-## 실험 기록 추가하기
-
-1. 글 폴더를 만듭니다: `posts/<slug>/` (`slug`가 주소 `#/blog/<slug>`가 됩니다). 안에 `index.md`를 넣고, 그 글에서 쓰는 이미지는 같은 폴더에 함께 둡니다.
-
-```text
-posts/
-  strata-qwen38-benchmark/
-    index.md
-    bench-voxel.png      ← 본문에서 ![복셀 벤치마크](bench-voxel.png)
-```
-
-   본문만 둘 일은 예전처럼 `posts/<slug>.md` 하나로 두어도 됩니다(둘 다 게시 대상입니다).
-2. 파일 맨 위에 frontmatter를 적습니다.
-
-```markdown
----
-title: 포스트 제목
-date: 2026-11-10
-tags: [llm, gpu, benchmark]
-summary: 목록 카드에 한 줄로 표시될 요약.
-demo: bench.html         ← 선택. 포스트 폴더의 HTML을 본문 안에서 실행
-demo_height: 420         ← 선택. 데모 프레임 높이(px, 기본 460)
-draft: false             ← 선택. true면 게시 목록에서 빠짐
----
-
-본문 마크다운…
-```
-
-3. 게시 목록을 갱신합니다: `node tools/build-posts.mjs`
-   - `posts/*/index.md`와 `posts/*.md`를 자동으로 훑어서 `posts/index.json`(브라우저가 읽는 게시 목록)과 `posts/posts.js`(`file://` 미리보기 사본)을 다시 씁니다.
-   - `index.json`에 직접 적어 둔 항목은 그대로 보존해 합집합으로 만듭니다. 글은 남겨 두고 목록에서 빼고 싶으면 frontmatter에 `draft: true`를 적으면 되고, 목록에 있는데 파일이 없는 항목은 경고 후 빠집니다. slug가 겹치면 경고하고 비정상 종료 코드를 남깁니다.
-   - frontmatter의 `demo` 값이 포스트 폴더에 없거나 사이트 밖을 가리키면 빌드에서 경고합니다.
-   - 목록 순서는 정렬에 영향을 주지 않습니다(Newest / Oldest가 frontmatter의 `date` 기준).
-4. 미리보기를 새로고침합니다. `file://`로 여는 경우엔 Markdown을 고칠 때마다 3단계를 다시 실행해야 반영됩니다.
-5. (선택) Blog 필터 단추를 추가하려면 `blog.js` 상단의 `CATEGORIES = []`에 태그 이름을 적습니다. 포스트 frontmatter의 `tags`와 연결되어 목록 필터로 동작하고, 포스트 헤더의 태그도 클릭 가능한 링크로 바뀝니다. 등록되지 않은 태그는 이름만 표시되고, 저장된 필터 값이 목록에 없으면 `All`로 되돌아갑니다.
-
-### 이미지는 포스트 폴더에
-
-본문에서 `![설명](photo.png)`처럼 파일명만 쓰면 그 글 폴더를 기준으로 해석됩니다.
-
-| Markdown에서 쓴 경로 | 실제로 불러오는 파일 |
-| --- | --- |
-| `![설명](photo.png)` | `posts/<slug>/photo.png` |
-| `![설명](../shared.png)` | `posts/shared.png` |
-| `![설명](/assets/…)` | `index.html`이 있는 사이트 기준 (하위 경로 배포·서버·`file://` 모두 동작) |
-| `![설명](https://…)` | 그대로 외부에서 |
-
-이미지는 `display: block`·`max-width: 100%`로 폭만 맞춰 둥근 모서리로 놓이고 `loading="lazy"`로 늦게 불러오며, 캡션은 그리지 않습니다(`alt`는 대체 텍스트로만 쓰입니다). `![x](javascript:…)` 같은 위험한 경로와 태그 안의 `onerror=`는 예전처럼 무력화됩니다.
-
-### 본문 안에 실행되는 데모 끼우기
-
-frontmatter에 `demo: bench.html` 한 줄이면 그 HTML이 포스트 본문 안에서 돌아갑니다. 위치를 직접 정하려면 본문의 원하는 자리에 `[[demo]]`를 한 줄 단독으로 놓습니다(마커가 없으면 본문 맨 위에 올라갑니다).
-
-- iframe은 `sandbox="allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock"`로 격리됩니다. 캔버스·WebGL·버튼·폼·`alert`·팝업은 동작하지만, 바깥 페이지 DOM과 `localStorage`·쿠키·IndexedDB는 차단됩니다.
-- 프레임 아래에 같은 파일을 새 창으로 여는 링크가 붙습니다. 저장소에 상태를 남기는 데모는 그 링크로 열었을 때 정상 동작합니다.
-- 데모 안에 다른 HTML을 iframe으로 중첩할 수도 있습니다. `file://` 미리보기에서는 격리된 창이 로컬 파일을 불러오지 못하므로(`Not allowed to load local resource`) 데모 프레임만 같은 출처로 열어 줍니다. 그 때는 라벨이 `실행 중 · 로컬 미리보기(같은 출처)`로 바뀌고, 서버·배포 환경에서는 항상 격리된 창입니다.
-- 데모 안에서 사이트의 로컬 JS·JSON을 런타임 `import`·`fetch`로 가져오는 것은 차단됩니다(CDN에서 ES 모듈로 불러오는 것은 가능). 데모는 단일 파일로 만드세요.
-- 높이는 `demo_height`(px, 기본 460)로 잡고, 모바일에서는 화면의 68%를 넘지 않습니다.
-- `demo`는 포스트 폴더 안의 상대 경로만 허용합니다. 사이트 밖 URL이나 없는 파일은 iframe 대신 `데모를 열 수 없습니다.` 안내로 바뀝니다(`file://` 미리보기에서는 확인을 생략합니다).
-
-데모 HTML 작성 규칙(뷰포트 메타, 다크 모드 대응, CDN 지양 등)은 사이트 안의 `#/blog/writing-guide` 글에 정리해 두었습니다.
-
-지원하는 마크다운 문법: 제목(`#`~`######`), 구분선(`---`), 인용(`>`), 순서·비순서 목록, 표(`:---:` 정렬, 칸 안에서 `<br>`), 강조·기울임·취소선, 인라인 코드와 언어 표시 펜스(` ```mermaid `), 링크·이미지. HTML은 이스케이프되므로 `<br>`만 허용됩니다.
-
 ## 로컬에서 보기
 
 - 서버로 여는 경우(권장): 사이트 폴더에서 `python -m http.server` 실행 후 `http://localhost:8000` 접속. 포스트는 `posts/<slug>/index.md`(또는 `posts/<slug>.md`)를 바로 읽습니다.
-- `index.html`을 더블클릭해 여는 경우(`file://`)에는 브라우저가 `fetch`를 차단하므로, `posts/posts.js`(위 4단계에서 생성된 미리보기 사본)를 사용합니다. Markdown을 수정한 뒤 사본을 갱신하지 않으면 이전 내용이 보입니다.
-
-## GitHub Pages로 배포하기
-
-GitHub Pages로 배포합니다. 저장소 최상위가 사이트 루트이고 빌드 산출물은 없습니다(정적 파일을 그대로 서빙).
-
-1. GitHub에 새 저장소 `sonic-blog`를 만들고(public) remote를 붙여 push합니다.
-
-   ```bash
-   git remote rename origin projects-portal   # 기존 remote는 그냥 남겨 둡니다
-   git remote add origin https://github.com/sonic240612/sonic-blog.git
-   git push -u origin main
-   ```
-
-2. `.github/workflows/deploy.yml`가 push마다 다음을 합니다.
-   - `node tools/build-posts.mjs`로 `posts/index.json`·`posts/posts.js`를 원문에서 재생성
-   - 사이트가 쓰는 파일만 `_site/`로 조립(`index.html`, CSS 2개, JS 3개, 벽지 SVG 2개, `assets/`, `posts/`, `.nojekyll`)
-   - `actions/upload-pages-artifact` → `actions/deploy-pages`로 배포
-
-   최초 1회는 GitHub → Settings → Pages → **Build source: GitHub Actions**로 지정해 주면 이후 push는 자동으로 배포됩니다.
-
-3. 주소는 `https://sonic240612.github.io/sonic-blog/`입니다. `_site/`에 담지 않은 파일(`README.md`, `tools/`, `vercel.json`, `.github/`)은 사이트로 서빙되지 않습니다.
-
-- **`/sonic-blog/` 하위 경로**: CSS·JS·글·이미지 참조가 전부 상대 경로이고, Markdown에서 `/assets/…`처럼 루트로 쓴 경로도 `blog.js`가 `index.html` 위치(`SITE_BASE`) 기준으로 고쳐 붙입니다. 로컬 `python -m http.server`(루트), 하위 경로 배포, `file://`에서 같은 글이 같은 파일을 불러옵니다.
-- **라우팅**: 주소가 `#/blog/<slug>` 형태라 Pages에서 404 리라이트를 걸 필요가 없습니다. 딥 링크·새로고침·공유 링크가 그대로 동작합니다.
-- **`.nojekyll`**: 저장소 루트에 이 파일이 있어야 Pages가 Jekyll 빌드를 태우지 않습니다. 없으면 `posts/<slug>/index.md`의 frontmatter(`---`)를 Jekyll가 소비하거나 HTML로 바꿔 버려서 원문 fetch가 깨집니다.
-- `posts/posts.js`는 `file://`로 열 때만 쓰이므로 서버 배포에서는 아무것도 하지 않습니다. 서버는 `posts/index.json`과 원문 Markdown을 직접 읽습니다.
-- 사이트 루트에 새 파일(이미지·CSS 등)을 추가하면 워크플로의 "Assemble site" 단계에도 복사 명령을 더해 주어야 배포에 포함됩니다.
-- 커스텀 도메인을 쓰려면 Settings → Pages → Custom domain에 입력하고 저장소에 `CNAME`을 두면 됩니다. 접두사가 `/sonic-blog/`에서 도메인 루트로 바뀌어도 경로 처리는 그대로 맞습니다.
+- `index.html`을 더블클릭해 여는 경우(`file://`)에는 브라우저가 `fetch`를 차단하므로, `posts/posts.js`(`node tools/build-posts.mjs`가 만드는 미리보기 사본)를 사용합니다. Markdown을 수정한 뒤 사본을 갱신하지 않으면 이전 내용이 보입니다.
+- 실험 기록을 추가하는 방법(글 폴더 만들기·frontmatter·이미지 경로·`demo` 한 줄)은 사이트 안의 기록 가이드 `#/blog/writing-guide`에 적어 두었습니다. 배포는 GitHub Pages 워크플로(`.github/workflows/deploy.yml`)가 `main` push마다 자동으로 합니다.

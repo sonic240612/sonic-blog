@@ -113,7 +113,7 @@ iframe은 `sandbox`로 격리됩니다. 실험 코드가 사이트 본문을 망
 
 - 서버로 여는 방법(권장): 사이트 폴더에서 `python -m http.server` 후 `http://localhost:8000`. Markdown을 직접 읽으므로 새로고침만으로 반영됩니다.
 - `index.html`을 더블클릭해서 여는 방법(`file://`): `fetch`가 차단되므로 `posts/posts.js` 사본을 사용합니다. 글이나 이미지를 고칠 때마다 `node tools/build-posts.mjs`를 다시 돌려야 반영됩니다.
-- Vercel에는 `posts/` 폴더째 올라갑니다. 별도 설정은 없습니다.
+- 배포는 GitHub Pages 워크플로(`.github/workflows/deploy.yml`)가 `index.html`·`posts/` 폴더째 올려 줍니다. 별도 설정은 없습니다.
 
 ## 자주 겪는 문제
 

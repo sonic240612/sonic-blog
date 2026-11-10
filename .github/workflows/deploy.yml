@@ -28,7 +28,7 @@ jobs:
       - name: Rebuild post index
         run: node tools/build-posts.mjs
 
-      # 사이트가 실제로 쓰는 파일만 배포 폴더에 담습니다(tools/, README, vercel.json은 올라가지 않습니다).
+      # 사이트가 실제로 쓰는 파일만 배포 폴더에 담습니다(tools/, README, .github는 올라가지 않습니다).
       - name: Assemble site
         run: |
           mkdir _site
