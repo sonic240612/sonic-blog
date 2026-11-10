@@ -65,6 +65,9 @@
   // 렌더링 중인 포스트가 들어 있는 폴더. 본문 안의 상대 이미지·링크를 여기 기준으로 푼니다.
   let postBase = '';
   const DEMO_MARK = /^ {0,3}\[\[demo\]\][ \t]*\r?\n?/m;
+  const DEMO_SANDBOX = 'allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock';
+  // file:// 미리보기에서는 중섭 iframe이 로컬 파일을 못 불러오므로 같은 출처를 열어 둡니다.
+  const LOCAL_PREVIEW = location.protocol === 'file:';
 
   /* 본문 안의 [[demo]] 자리(또는 맨 위)에 격리된 iframe 데모를 끼웁니다. */
   function renderBody(post) {
@@ -90,9 +93,11 @@
     // 데모는 사이트 안의 HTML 파일만 iframe으로 실행합니다. 나머지는 안내만 남깁니다.
     if (!src || src === '#' || /^https?:/i.test(src) || !/\.html?$/i.test(src)) return demoNotice(post.demo.src);
     const height = post.demo.height >= 160 && post.demo.height <= 1600 ? post.demo.height : 460;
+    const sandbox = LOCAL_PREVIEW ? DEMO_SANDBOX + ' allow-same-origin' : DEMO_SANDBOX;
+    const note = LOCAL_PREVIEW ? '실행 중 · 로컬 미리보기(같은 출처)' : '실행 중 · 격리된 창';
     return `<figure class="post-demo" data-demo-src="${src}">
-  <iframe class="post-demo-frame" src="${src}" title="${escapeHtml(post.demo.label)} — 실행 중인 데모" loading="lazy" style="--demo-height:${height}px" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock"></iframe>
-  <figcaption class="post-demo-bar"><span class="post-demo-label">실행 중 · 격리된 창</span><a class="post-demo-open" href="${src}" target="_blank" rel="noopener">새 창에서 열기</a></figcaption>
+  <iframe class="post-demo-frame" src="${src}" title="${escapeHtml(post.demo.label)} — 실행 중인 데모" loading="lazy" style="--demo-height:${height}px" sandbox="${sandbox}"></iframe>
+  <figcaption class="post-demo-bar"><span class="post-demo-label">${note}</span><a class="post-demo-open" href="${src}" target="_blank" rel="noopener">새 창에서 열기</a></figcaption>
 </figure>`;
   }
 

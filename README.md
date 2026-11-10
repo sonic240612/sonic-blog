@@ -121,6 +121,8 @@ frontmatter에 `demo: bench.html` 한 줄이면 그 HTML이 포스트 본문 안
 
 - iframe은 `sandbox="allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock"`로 격리됩니다. 캔버스·WebGL·버튼·폼·`alert`·팝업은 동작하지만, 바깥 페이지 DOM과 `localStorage`·쿠키·IndexedDB는 차단됩니다.
 - 프레임 아래에 같은 파일을 새 창으로 여는 링크가 붙습니다. 저장소에 상태를 남기는 데모는 그 링크로 열었을 때 정상 동작합니다.
+- 데모 안에 다른 HTML을 iframe으로 중첩할 수도 있습니다. `file://` 미리보기에서는 격리된 창이 로컬 파일을 불러오지 못하므로(`Not allowed to load local resource`) 데모 프레임만 같은 출처로 열어 줍니다. 그 때는 라벨이 `실행 중 · 로컬 미리보기(같은 출처)`로 바뀌고, 서버·배포 환경에서는 항상 격리된 창입니다.
+- 데모 안에서 사이트의 로컬 JS·JSON을 런타임 `import`·`fetch`로 가져오는 것은 차단됩니다(CDN에서 ES 모듈로 불러오는 것은 가능). 데모는 단일 파일로 만드세요.
 - 높이는 `demo_height`(px, 기본 460)로 잡고, 모바일에서는 화면의 68%를 넘지 않습니다.
 - `demo`는 포스트 폴더 안의 상대 경로만 허용합니다. 사이트 밖 URL이나 없는 파일은 iframe 대신 `데모를 열 수 없습니다.` 안내로 바뀝니다(`file://` 미리보기에서는 확인을 생략합니다).
 

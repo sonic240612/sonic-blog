@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Voxel Bench 실시간 3D 비교 — IQ3_S vs AD-405</title>
+  <style>
+    :root {
+      --bg: #07090e;
+      --ink: #e5edf7;
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #00e5ff;
+      --accent-soft: rgba(0, 229, 255, 0.14);
+      --panel-hdr: rgba(10, 15, 24, 0.94);
+      --text-sub: #8292a8;
+      --tag-iq: #94a3b8;
+      --tag-ad: #38bdf8;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f7fb;
+        --ink: #131720;
+        --line: rgba(0, 0, 0, 0.12);
+        --accent: #0284c7;
+        --accent-soft: rgba(2, 132, 199, 0.12);
+        --panel-hdr: rgba(240, 243, 249, 0.96);
+        --text-sub: #5a6b82;
+        --tag-iq: #64748b;
+        --tag-ad: #0284c7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 12px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      height: 42px;
+      min-height: 42px;
+      background: var(--panel-hdr);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 14px;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .btn-group {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    button {
+      padding: 5px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    button.active {
+      background: var(--accent);
+      color: #030812;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    #viewport {
+      flex: 1;
+      display: flex;
+      width: 100%;
+      height: calc(100% - 42px);
+      position: relative;
+    }
+    .panel {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-right: 1px solid var(--line);
+    }
+    .panel:last-child {
+      border-right: none;
+    }
+    .panel-bar {
+      background: var(--panel-hdr);
+      padding: 5px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      user-select: none;
+    }
+    .panel-title {
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-title.iq3s { color: var(--tag-iq); }
+    .panel-title.ad405 { color: var(--tag-ad); }
+    .panel-stats {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+    iframe {
+      width: 100%;
+      flex: 1;
+      border: 0;
+      background: #02060d;
+    }
+    /* Mode switching */
+    body.mode-iq3s .panel-ad405 { display: none; }
+    body.mode-ad405 .panel-iq3s { display: none; }
+
+    @media (max-width: 680px) {
+      #viewport {
+        flex-direction: column;
+      }
+      .panel {
+        height: 50%;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel:last-child {
+        border-bottom: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <span>Voxel Bench 3D 비교</span>
+      <span class="badge"><span class="dot"></span>실시간 렌더링</span>
+    </div>
+    <div class="btn-group">
+      <button class="active" id="btn-split" onclick="setMode('split')">좌우 분할</button>
+      <button id="btn-iq3s" onclick="setMode('iq3s')">IQ3_S 단독</button>
+      <button id="btn-ad405" onclick="setMode('ad405')">AD-405 단독</button>
+      <button onclick="toggleFs()" title="전체화면">⛶</button>
+    </div>
+  </header>
+
+  <div id="viewport">
+    <!-- IQ3_S -->
+    <div class="panel panel-iq3s">
+      <div class="panel-bar">
+        <span class="panel-title iq3s">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;"></span>
+          IQ3_S
+        </span>
+        <span class="panel-stats">1,978 LOC · 드로우콜 500+ · 마우스 드래그/휠</span>
+      </div>
+      <iframe src="iq3s.html" title="IQ3_S 3D Scene"></iframe>
+    </div>
+
+    <!-- AD-405 -->
+    <div class="panel panel-ad405">
+      <div class="panel-bar">
+        <span class="panel-title ad405">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;"></span>
+          AD-405
+        </span>
+        <span class="panel-stats">2,353 LOC · 55 드로우콜 (5,078 Tris) · Boids 어군</span>
+      </div>
+      <iframe src="ad405.html" title="AD-405 3D Scene"></iframe>
+    </div>
+  </div>
+
+  <script>
+    function setMode(mode) {
+      document.body.className = mode === 'split' ? '' : 'mode-' + mode;
+      document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-' + mode);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function toggleFs() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  </script>
+</body>
+</html>
