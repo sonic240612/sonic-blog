@@ -6,6 +6,10 @@
   const INDEX = 'posts/index.json';
   const BUNDLE = 'posts/posts.js';
   const DIR = 'posts/';
+
+  /* 블로그 필터 카테고리. 여기에 값을 넣으면 단추가 생기고, 포스트 frontmatter의
+     tags와 연결되어 해당 태그만 목록에 남깁니다. (예: const CATEGORIES = ['llm', 'gpu'];) */
+  const CATEGORIES = [];
   const grid = document.getElementById('blog-view');
   const status = document.getElementById('blog-status');
   const tagControl = document.querySelector('.tag-control');
@@ -34,6 +38,7 @@
 
   let posts = null;
   let tag = readPreference('tag') || 'all';
+  if (!CATEGORIES.includes(tag)) tag = 'all';
   let openedByClick = false;
   let loadFailed = false;
 
@@ -293,8 +298,7 @@
       date,
       tags,
       summary: meta.summary || '',
-      content,
-      chars: content.replace(/```[\s\S]*?```/g, '').replace(/[#>*`|_[\]()]/g, '').trim().length
+      content
     };
   }
 
@@ -394,10 +398,10 @@
   }
 
   function renderTagButtons() {
-    const tags = [...new Set((posts || []).flatMap(post => post.tags))].sort();
-    if (tag !== 'all' && !tags.includes(tag)) tag = 'all';
+    const values = ['all', ...CATEGORIES];
+    if (!values.includes(tag)) tag = 'all';
     tagControl.querySelectorAll('.tab-btn').forEach(button => button.remove());
-    ['all', ...tags].forEach(value => {
+    values.forEach(value => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'tab-btn' + (value === tag ? ' active' : '');
@@ -413,12 +417,20 @@
     postShell.style.setProperty('--art-bg', background);
     postShell.style.setProperty('--art-color', accent);
     postTitle.textContent = post.title;
-    postMeta.textContent = `${formatDate(post.date)} · 약 ${Math.max(1, Math.round(post.chars / 600))}분 분량`;
+    postMeta.textContent = formatDate(post.date);
     postSource.href = DIR + post.file;
     postTags.textContent = '';
     post.tags.forEach(value => {
       const item = document.createElement('li');
-      item.innerHTML = `<a href="#/blog?tag=${encodeURIComponent(value)}">${escapeHtml(value)}</a>`;
+      // 카테고리로 등록되지 않은 태그는 필터로 동작하지 않으므로 plain 텍스트로 둡니다.
+      if (CATEGORIES.includes(value)) {
+        item.innerHTML = `<a href="#/blog?tag=${encodeURIComponent(value)}">${escapeHtml(value)}</a>`;
+      } else {
+        const plain = document.createElement('span');
+        plain.className = 'post-tag-plain';
+        plain.textContent = value;
+        item.appendChild(plain);
+      }
       postTags.appendChild(item);
     });
     postBody.innerHTML = renderMarkdown(post.content);
@@ -470,9 +482,11 @@
     const match = /[?&]tag=([^&]+)/.exec(hash);
     if (!match) return;
     const wanted = decodeURIComponent(match[1]);
-    if ((posts || []).some(item => item.tags.includes(wanted))) {
+    if (CATEGORIES.includes(wanted)) {
       tag = wanted;
       writePreference('tag', tag);
+    } else {
+      tag = 'all';
     }
     const cleaned = hash.replace(/[?&]tag=[^&]*/, '').replace(/\?+$/, '');
     try { history.replaceState(null, '', cleaned || '#/blog'); } catch {}
