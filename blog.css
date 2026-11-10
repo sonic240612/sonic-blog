@@ -338,7 +338,9 @@ body[data-view="post"] .glass-intro { display: none; }
 
 @media (max-width: 640px) {
   .post { gap: 16px; }
-  .post-titlebar-glass { padding: 8px 14px; }
+  /* 바닥 독으로 내려온 제목 알약은 위가 아니라 아래에서 올라옵니다. */
+  .post-titlebar-glass { padding: 8px 14px; transform: translateY(12px) scale(.985); }
+  .post-titlebar.is-shown .post-titlebar-glass { transform: none; }
   .post-titlebar-title { font-size: 0.8rem; }
   .post-panel { border-radius: 22px; }
   .post-header { grid-template-columns: 1fr; gap: 10px; padding-bottom: 18px; }

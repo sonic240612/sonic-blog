@@ -210,11 +210,12 @@
 [data-theme="liquid-glass"] .tab-btn.active { color: var(--accent); background: transparent; box-shadow: none; }
 [data-theme="liquid-glass"] .tab-btn:active { transform: scale(.94); }
 [data-theme="liquid-glass"] .tab-icon { display: block; width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-[data-theme="liquid-glass"] .tab-label { display: block; max-height: 16px; opacity: 1; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .22s, transform .3s; }
+[data-theme="liquid-glass"] .tab-label { display: block; max-height: 16px; opacity: 1; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .22s .12s, transform .3s; }
 [data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) .tab-btn { transition: min-height .4s cubic-bezier(.2,.8,.2,1), gap .4s, color .2s; }
-/* 스크롤을 내리면 섹션·카테고리·태그·포스트·정렬 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
+/* 스크롤을 내리면 섹션·카테고리·태그·포스트·정렬 단추가 함께 줄어들어 조작 계층이 가벼워집니다.
+   글자는 칸이 좁아지기 전에 먼저 사라져야 아이콘 위에 겹치지 않습니다. */
 [data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) .tab-btn { min-height: 42px; gap: 0; }
-[data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; }
+[data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .07s linear, transform .25s; }
 /* 포스트를 읽을 때 되돌아가기·원문 단추를 정렬 단추가 있던 오른쪽 칸에 둡니다. */
 [data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 8px; }
 [data-theme="liquid-glass"] .post-control[hidden] { display: none; }
@@ -343,8 +344,31 @@
   [data-theme="liquid-glass"] .glass-intro { margin: 40px 22px 25px; padding: 0; }
   .glass-intro .intro-desc { font-size: .81rem; }
   [data-theme="liquid-glass"] .tabs { top: calc(71px + var(--safe-area-top)); width: calc(100% - 32px); }
-  /* 좁은 화면에서는 제목 알약을 탭 바 아래 가운데에 얹습니다. */
-  [data-theme="liquid-glass"] .post-titlebar { left: 0; right: 0; top: calc(100% + 8px); transform: none; justify-content: center; }
+  /* 모바일 조작 계층은 화면 아래에 붙입니다.
+     필터(Projects 카테고리 / Blog 태그)와 포스트 제목이 스크롤과 무관하게 항상 손에 닿습니다. */
+  [data-theme="liquid-glass"] [data-liquid-surface].category-control {
+    position: fixed; left: 16px; right: 16px; bottom: calc(14px + var(--safe-area-bottom));
+    width: auto; max-width: none; z-index: 18;
+    box-shadow: 0 12px 30px rgb(15 23 42 / .16), var(--surface-shadow);
+  }
+  /* 태그는 개수가 적으므로 유리 바가 글자 폭만큼만 커진 채 가운데에 앉습니다. */
+  [data-theme="liquid-glass"] [data-liquid-surface].tag-control {
+    position: fixed; left: 16px; right: 16px; bottom: calc(14px + var(--safe-area-bottom));
+    width: max-content; max-width: calc(100% - 32px); margin-inline: auto;
+    justify-content: center; overflow-x: auto; scrollbar-width: none; z-index: 18;
+    box-shadow: 0 12px 30px rgb(15 23 42 / .16), var(--surface-shadow);
+  }
+  [data-theme="liquid-glass"] .tag-control::-webkit-scrollbar { display: none; }
+  /* 포스트를 읽을 때 남는 제목 알약도 같은 자리에 뜹니다(목록 화면에서는 감겨 있습니다).
+     .is-below보다 이겨야 하므로 두 이름을 한꺼번에 잡습니다. */
+  [data-theme="liquid-glass"] :is(.post-titlebar, .post-titlebar.is-below) {
+    position: fixed; left: 16px; right: 16px; top: auto;
+    bottom: calc(14px + var(--safe-area-bottom));
+    transform: none; justify-content: center; z-index: 18;
+  }
+  [data-theme="liquid-glass"] [data-liquid-surface].post-titlebar-glass { box-shadow: 0 12px 30px rgb(15 23 42 / .16), var(--surface-shadow); }
+  /* 바닥 독 뒤로 내용이 남지 않게 페이지 끝에 여백을 더합니다. */
+  [data-theme="liquid-glass"] .glass-footer { margin-bottom: calc(110px + var(--safe-area-bottom)); }
   [data-theme="liquid-glass"] main { margin: 20px 16px 0; }
   [data-theme="liquid-glass"] .grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
   [data-theme="liquid-glass"] .project-art { height: 168px; }
