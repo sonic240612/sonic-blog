@@ -270,6 +270,9 @@ body[data-view="post"] .glass-intro { display: none; }
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--prose-rule);
+  /* 표 칸에서 한국어 말이 행 중간에 쪼개지지 않게 붙여 씁니다. (anywhere는 칸 폭을 줄여 오히려 쪼갬) */
+  word-break: keep-all;
+  hyphens: none;
 }
 .prose tr:last-child td { border-bottom: 0; }
 .prose thead th {
