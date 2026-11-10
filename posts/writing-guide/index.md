@@ -1,6 +1,6 @@
 ---
 title: 실험 기록 작성 가이드
-date: 2026-11-11
+date: 2026-11-10
 tags: [guide, portal]
 summary: 글 폴더 만들기, frontmatter 키, 이미지 경로, 그리고 demo 한 줄로 본문 안에서 실행되는 HTML 데모 끼우기까지. 이 글과 아래 시계가 예시입니다.
 demo: demo-clock.html

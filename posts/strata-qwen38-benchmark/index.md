@@ -1,6 +1,6 @@
 ---
 title: Strata 기반 Qwen3.8-Flash-Next 구동 및 벤치마크 리포트
-date: 2026-11-10
+date: 2026-11-11
 tags: [llm, gpu, inference, benchmark]
 summary: RTX 3090 24GB·64GB RAM 환경에서 Qwen3.8-Flash-Next(IQ2_XS / IQ3_S / AD-405) 실측 및 동일 프롬프트 3D 복셀 디오라마 실시간 구동 비교. 결과물 품질과 속도에서 앞선 IQ3_S를 최종 선택하고 AD-405는 삭제했다.
 demo: demo-voxel-compare.html
@@ -8,7 +8,7 @@ demo_height: 560
 demo_title: Voxel Bench — IQ3_S vs AD-405 실시간 3D 비교
 ---
 
-> **작성일:** 2026-11-10  
+> **측정일:** 2026-11-10  
 > **테스트 환경:** NVIDIA GeForce RTX 3090 (24GB VRAM) / 64GB DDR4 RAM / PCIe 4.0 NVMe SSD / Windows 11  
 > **추론 엔진:** Strata v0.2.13.1 (Engine 0.1.59, CUDA 13)  
 > **대상 모델:** Qwen3.8-Flash-Next (`IQ2_XS`, `IQ3_S`, `AD-405`)  
