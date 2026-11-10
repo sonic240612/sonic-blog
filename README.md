@@ -8,23 +8,23 @@
 
 게임과 재미 중심 프로젝트
 
-| 프로젝트 | 설명 | GitHub |
-| ---------- | ------ | -------- |
-| open-survivor | 뱀서류 생존 게임 | [바로가기](https://github.com/sonic240612/open-survivor) |
-| LADDER | 사다리 타기 게임 | [바로가기](https://github.com/sonic240612/LADDER) |
-| TikaTuka | 주사위 보드게임 | [바로가기](https://github.com/sonic240612/TikaTuka) |
-| Mars Panic!!! | 비공개 프로젝트 | - |
-| iF | AI 캐릭터 채팅 & 인터랙티브 스토리텔링 플랫폼 | [바로가기](https://github.com/sonic240612/iF) |
-| beatsync | 실시간 멀티플레이어 음악 퀴즈 & 타임라인 카드 배틀 웹 게임 | [바로가기](https://github.com/sonic240612/beatsync) |
+| 프로젝트 | 설명 | GitHub | Vercel |
+|----------|------|--------|--------|
+| open-survivor | 뱀서류 생존 게임 | [바로가기](https://github.com/sonic240612/open-survivor) | [바로가기](https://open-survivor.vercel.app) |
+| LADDER | 사다리 타기 게임 | [바로가기](https://github.com/sonic240612/LADDER) | [바로가기](https://ladder-roulette.vercel.app) |
+| TikaTuka | 주사위 보드게임 | [바로가기](https://github.com/sonic240612/TikaTuka) | [바로가기](https://tikatuka-one.vercel.app) |
+| Mars Panic!!! | 비공개 프로젝트 | - | - |
+| iF | AI 캐릭터 채팅 & 인터랙티브 스토리텔링 플랫폼 | [바로가기](https://github.com/sonic240612/iF) | [바로가기](https://if-chat-plum.vercel.app) |
+| beatsync | 실시간 멀티플레이어 음악 퀴즈 & 타임라인 카드 배틀 웹 게임 | [바로가기](https://github.com/sonic240612/beatsync) | - |
 
 ## Tools
 
 실용적인 도구 프로젝트
 
-| 프로젝트 | 설명 | GitHub |
-| ---------- | ------ | -------- |
-| 어디가?(WhereTo?) | 랜덤 장소 추천 서비스 | [바로가기](https://github.com/sonic240612/whereto) |
-| PixelCircle | 픽셀 아트용 정밀 픽셀 원형 생성기 | [바로가기](https://github.com/sonic240612/pixel-circle) |
+| 프로젝트 | 설명 | GitHub | Vercel |
+|----------|------|--------|--------|
+| 어디가?(WhereTo?) | 랜덤 장소 추천 서비스 | [바로가기](https://github.com/sonic240612/whereto) | [바로가기](https://whereto-swart.vercel.app) |
+| PixelCircle | 픽셀 아트용 정밀 픽셀 원형 생성기 | [바로가기](https://github.com/sonic240612/pixel-circle) | [바로가기](https://pixel-circle.vercel.app) |
 
 ## Lab
 
@@ -39,11 +39,11 @@ AI 에이전트와 협업 방식을 탐구하는 실험적 프로젝트
 
 일상과 생산성 프로젝트
 
-| 프로젝트 | 설명 | GitHub |
-| ---------- | ------ | -------- |
-| HueWorld | 실시간 글로벌 무드 맵 | [바로가기](https://github.com/sonic240612/HueWorld) |
-| zen_pebble | 디지털 디톡스 & 인내심 테스트 | [바로가기](https://github.com/sonic240612/zen_pebble) |
-| Focus Forest | Pomodoro 타이머 & 스케줄 플래너 | [바로가기](https://github.com/sonic240612/Focus-Forest) |
+| 프로젝트 | 설명 | GitHub | Vercel |
+|----------|------|--------|--------|
+| HueWorld | 실시간 글로벌 무드 맵 | [바로가기](https://github.com/sonic240612/HueWorld) | [바로가기](https://hueworld.vercel.app) |
+| zen_pebble | 디지털 디톡스 & 인내심 테스트 | [바로가기](https://github.com/sonic240612/zen_pebble) | [바로가기](https://zen-pebble.vercel.app) |
+| Focus Forest | Pomodoro 타이머 & 스케줄 플래너 | [바로가기](https://github.com/sonic240612/Focus-Forest) | [바로가기](https://focus-forest-jet.vercel.app) |
 
 ## 기능
 
