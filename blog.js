@@ -678,6 +678,12 @@
   window.addEventListener('hashchange', () => sync());
   window.addEventListener('scroll', requestTitlebar, { passive: true });
   window.addEventListener('resize', requestTitlebar);
+  /* 스크롤로 탭 바가 줄어드는 애니메이션이 끝난 뒤에 한 번 더 재야
+     제목 알약이 좌우 단추 사이 가운데에 정확히 앉습니다. */
+  window.addEventListener('transitionend', function(event) {
+    const t = event.target;
+    if (t && t.closest && t.closest('.tabs, .tab-btn, .post-titlebar')) requestTitlebar();
+  });
 
   function backToList() {
     const stepBack = openedByClick && history.length > 1;

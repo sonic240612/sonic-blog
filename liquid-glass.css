@@ -231,13 +231,13 @@
   pointer-events: none;
   z-index: 4;
 }
-/* 좌우 단추 사이가 좁아지면 알약을 탭 바 아래로 내립니다. */
+/* 좌우 단추 사이가 좁아지면 알약을 탭 바 아래 가운데로 내립니다. */
 [data-theme="liquid-glass"] .post-titlebar.is-below {
   left: 0;
   right: 0;
   top: calc(100% + 8px);
   transform: none;
-  justify-content: flex-start;
+  justify-content: center;
 }
 /* 정렬 단추는 다른 탭과 같은 뼈대(.tab-btn)를 쓰므로 위 규칙대로 58px → 42px로 늘어났다 줄어듭니다. */
 [data-theme="liquid-glass"] .selection-lens {
@@ -308,6 +308,31 @@
   [data-theme="liquid-glass"] .tab-btn { min-width: 66px; padding-inline: 10px; }
   [data-theme="liquid-glass"] .sort-control .tab-btn { min-width: 72px; }
 }
+/* 탭 스트립은 태블릿 폭(760px)부터 그룹 단위로 줄을 바꿉니다.
+   데스크톱 규칙대로 한 줄(nowrap)에 담으면 641~740px 구간에서 페이지가 가로로 넘칩니다. */
+@media (max-width: 760px) {
+  [data-theme="liquid-glass"] .tabs { flex-wrap: wrap; gap: 10px 8px; }
+  /* 섹션(Projects/Blog)과 정렬·포스트 단추가 한 행에 좌우로 앉습니다.
+     줄바꿈은 그룹 안에서가 아니라 그룹 사이에서만 일어나도록 단추 폭을 좁힙니다. */
+  [data-theme="liquid-glass"] .tabs .tab-btn { padding: 5px 10px; gap: 4px; }
+  [data-theme="liquid-glass"] .tabs .tab-icon { width: 19px; height: 19px; }
+  [data-theme="liquid-glass"] .tabs .tab-label { font-size: .64rem; }
+  /* 스크롤로 줄어들 때는 좁은 화면에서 한 번 더 얇아집니다(라벨은 위의 compact 규칙이 접습니다). */
+  [data-theme="liquid-glass"].glass-compact .tabs .tab-btn { min-height: 36px; padding-block: 4px; }
+  [data-theme="liquid-glass"] :is(.section-control, .category-control, .sort-control, .post-control) { padding: 5px; flex-wrap: nowrap; }
+  [data-theme="liquid-glass"] .section-control { order: 1; flex: 0 0 auto; }
+  [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 68px; }
+  [data-theme="liquid-glass"] .sort-control { order: 2; flex: 0 0 auto; margin-left: auto; }
+  [data-theme="liquid-glass"] .sort-control .tab-btn { min-width: 66px; }
+  /* 포스트를 읽을 때 되돌아가기·원문 단추도 같은 행 오른쪽에 붙입니다. */
+  [data-theme="liquid-glass"] .post-control { order: 2; width: auto; margin: 0 0 0 auto; gap: 4px; }
+  [data-theme="liquid-glass"] .post-control .tab-btn { min-width: 58px; }
+  [data-theme="liquid-glass"] .category-control { order: 3; width: 100%; justify-content: space-between; gap: 2px; }
+  [data-theme="liquid-glass"] .category-control .tab-btn { flex: 1; min-width: 0; padding-inline: 4px; font-size: .6rem; }
+  /* 태그가 한두 개일 때 유리 바가 화면 폭 전체로 늘지 않도록 글자 폭만 쓰습니다. */
+  [data-theme="liquid-glass"] .tag-control { order: 3; width: max-content; max-width: 100%; justify-content: flex-start; gap: 4px; }
+  [data-theme="liquid-glass"] .tag-control .tab-btn { flex: 0 1 auto; min-width: 68px; padding-inline: 14px; font-size: .66rem; }
+}
 @media (max-width: 640px) {
   [data-theme="liquid-glass"] .header-actions { margin-left: auto; }
   [data-theme="liquid-glass"] header { width: calc(100% - 32px); top: calc(12px + var(--safe-area-top)); margin-top: 16px; flex-wrap: nowrap; gap: 8px; }
@@ -317,19 +342,9 @@
   [data-theme="liquid-glass"] :is(#mode-toggle,#motion-toggle) { width: 44px; height: 44px; }
   [data-theme="liquid-glass"] .glass-intro { margin: 40px 22px 25px; padding: 0; }
   .glass-intro .intro-desc { font-size: .81rem; }
-  [data-theme="liquid-glass"] .tabs { top: calc(71px + var(--safe-area-top)); width: calc(100% - 32px); flex-wrap: wrap; gap: 12px; }
-  [data-theme="liquid-glass"] .section-control { order: 1; }
-  [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 92px; min-height: 44px; }
-  [data-theme="liquid-glass"] .sort-control { order: 2; margin-left: auto; }
-  [data-theme="liquid-glass"] .post-control { order: 3; width: 100%; margin: 0; justify-content: flex-end; }
-  /* 좁은 화면에서는 단추 아래에 붙이고, 제목이 길면 아래로 이어 적습니다. */
-  [data-theme="liquid-glass"] .post-titlebar { left: 0; right: 0; top: calc(100% + 8px); transform: none; justify-content: flex-start; }
-  [data-theme="liquid-glass"] .category-control { order: 3; width: 100%; justify-content: space-between; }
-  [data-theme="liquid-glass"] .category-control .tab-btn { flex: 1; min-width: 0; padding-inline: 5px; font-size: .61rem; min-height: 56px; }
-  /* 태그 단추는 개수가 적을 때 줄 전체 폭으로 늘어나지 않게 좌측에 붙입니다. */
-  [data-theme="liquid-glass"] .tag-control { order: 3; width: 100%; justify-content: flex-start; gap: 8px; }
-  [data-theme="liquid-glass"] .tag-control .tab-btn { flex: 0 1 auto; min-width: 84px; padding-inline: 18px; font-size: .7rem; min-height: 56px; }
-  [data-theme="liquid-glass"] .sort-control .tab-btn { min-height: 56px; min-width: 84px; padding-inline: 16px; font-size: .7rem; }
+  [data-theme="liquid-glass"] .tabs { top: calc(71px + var(--safe-area-top)); width: calc(100% - 32px); }
+  /* 좁은 화면에서는 제목 알약을 탭 바 아래 가운데에 얹습니다. */
+  [data-theme="liquid-glass"] .post-titlebar { left: 0; right: 0; top: calc(100% + 8px); transform: none; justify-content: center; }
   [data-theme="liquid-glass"] main { margin: 20px 16px 0; }
   [data-theme="liquid-glass"] .grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
   [data-theme="liquid-glass"] .project-art { height: 168px; }
@@ -343,6 +358,12 @@
 }
 @media (max-width: 380px) {
   [data-theme="liquid-glass"] :is(#mode-toggle,#motion-toggle) { width: 36px; height: 40px; }
+  /* 320px급 폰에서도 섹션·정렬이 한 행에 남도록 한 번 더 좁힙니다. */
+  [data-theme="liquid-glass"] .tabs .tab-label { font-size: .6rem; }
+  [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 56px; }
+  [data-theme="liquid-glass"] .sort-control .tab-btn { min-width: 54px; }
+  [data-theme="liquid-glass"] .post-control .tab-btn { min-width: 46px; padding-inline: 7px; }
+  [data-theme="liquid-glass"] .tag-control .tab-btn { min-width: 60px; padding-inline: 12px; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   [data-theme="liquid-glass"] [data-liquid-surface]::before { background: var(--glass-fallback); }
