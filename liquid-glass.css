@@ -211,15 +211,34 @@
 [data-theme="liquid-glass"] .tab-btn:active { transform: scale(.94); }
 [data-theme="liquid-glass"] .tab-icon { display: block; width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 [data-theme="liquid-glass"] .tab-label { display: block; max-height: 16px; opacity: 1; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .22s, transform .3s; }
-[data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control) .tab-btn { transition: min-height .4s cubic-bezier(.2,.8,.2,1), gap .4s, color .2s; }
-/* 스크롤을 내리면 섹션·카테고리·태그 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
-[data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control) .tab-btn { min-height: 42px; gap: 0; }
+[data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control, .post-control) .tab-btn { transition: min-height .4s cubic-bezier(.2,.8,.2,1), gap .4s, color .2s; }
+/* 스크롤을 내리면 섹션·카테고리·태그·포스트 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
+[data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control, .post-control) .tab-btn { min-height: 42px; gap: 0; }
 [data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; }
 /* 포스트를 읽을 때 되돌아가기·원문 단추를 정렬 단추가 있던 오른쪽 칸에 둡니다. */
-[data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 10px; }
+[data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 8px; }
 [data-theme="liquid-glass"] .post-control[hidden] { display: none; }
-[data-theme="liquid-glass"] .post-control :is(.post-back, .post-source) { transition: min-height .4s cubic-bezier(.2,.8,.2,1), padding .4s cubic-bezier(.2,.8,.2,1), color .2s; }
-[data-theme="liquid-glass"].glass-compact .post-control :is(.post-back, .post-source) { min-height: 42px; padding-block: 6px; }
+/* 제목 고정 바는 탭 바 안쪽, 좌우 단추 사이 가운데에 얹습니다.
+   좌우 칸 폭은 JS가 단추 가장자리에서 재고, 제목이 길면 알약이 위아래로 늘어납니다. */
+[data-theme="liquid-glass"] .post-titlebar {
+  position: absolute;
+  left: var(--titlebar-left, 210px);
+  right: var(--titlebar-right, 230px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 4;
+}
+/* 좌우 단추 사이가 좁아지면 알약을 탭 바 아래로 내립니다. */
+[data-theme="liquid-glass"] .post-titlebar.is-below {
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  transform: none;
+  justify-content: flex-start;
+}
 [data-theme="liquid-glass"] .sort-btn { min-height: 40px; min-width: 72px; padding: 9px 14px; font-size: .75rem; }
 [data-theme="liquid-glass"] .selection-lens {
   display: block;
@@ -275,7 +294,7 @@
 }
 [data-theme="liquid-glass"][data-mode="dark"].glass-scrolled [data-liquid-surface] { --glass-fill: rgba(24,26,32,.55); }
 /* 본문 글자 위에 얹히는 제목 고정 바는 유리를 한 겹 더 짙게 세웁니다. */
-[data-theme="liquid-glass"] .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); border-radius: 20px; }
+[data-theme="liquid-glass"] .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 92%, transparent); border-radius: 18px; }
 [data-theme="liquid-glass"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
 [data-theme="liquid-glass"][data-mode="dark"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
 
@@ -303,6 +322,8 @@
   [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 92px; min-height: 44px; }
   [data-theme="liquid-glass"] .sort-control { order: 2; margin-left: auto; }
   [data-theme="liquid-glass"] .post-control { order: 3; width: 100%; margin: 0; justify-content: flex-end; }
+  /* 좁은 화면에서는 단추 아래에 붙이고, 제목이 길면 아래로 이어 적습니다. */
+  [data-theme="liquid-glass"] .post-titlebar { left: 0; right: 0; top: calc(100% + 8px); transform: none; justify-content: flex-start; }
   [data-theme="liquid-glass"] .category-control { order: 3; width: 100%; justify-content: space-between; }
   [data-theme="liquid-glass"] .category-control .tab-btn { flex: 1; min-width: 0; padding-inline: 5px; font-size: .61rem; min-height: 56px; }
   /* 태그 단추는 개수가 적을 때 줄 전체 폭으로 늘어나지 않게 좌측에 붙입니다. */

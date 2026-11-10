@@ -294,12 +294,22 @@
   <div class="tag-control" data-liquid-surface role="group" aria-label="태그 선택" hidden>
   <span class="selection-lens" aria-hidden="true"></span>
   </div>
+  <!-- 포스트 제목 고정 바: 위 단추들 사이 가운데에 얹히므로 탭 바 안쪽에 둡니다. -->
+  <div class="post-titlebar" id="post-titlebar" aria-hidden="true">
+    <div class="post-titlebar-glass" data-liquid-surface>
+      <span class="post-titlebar-date" id="post-titlebar-date"></span>
+      <span class="post-titlebar-title" id="post-titlebar-title"></span>
+    </div>
+  </div>
   <div class="post-control" id="post-control" role="group" aria-label="포스트 조작" hidden>
-    <button class="post-back" id="post-back" data-liquid-surface type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
-      <span>Blog</span>
+    <button class="tab-btn post-back" id="post-back" data-liquid-surface type="button" title="Blog 목록으로">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+      <span class="tab-label">Blog</span>
     </button>
-    <a class="post-source" id="post-source" href="#" target="_blank" rel="noopener" data-liquid-surface>원문 Markdown</a>
+    <a class="tab-btn post-source" id="post-source" href="#" target="_blank" rel="noopener" data-liquid-surface title="원문 Markdown 열기">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M8.5 13h7M8.5 17h4.5"/></svg>
+      <span class="tab-label">원문 Markdown</span>
+    </a>
   </div>
   <span class="tabs-divider" aria-hidden="true"></span>
   <div class="sort-control" data-liquid-surface role="group" aria-label="정렬 순서">
@@ -489,12 +499,6 @@
   <p class="blog-status" id="blog-status" role="status" hidden></p>
 
   <article class="post" id="post-view" hidden aria-labelledby="post-title">
-    <div class="post-titlebar" id="post-titlebar" aria-hidden="true">
-      <div class="post-titlebar-glass" data-liquid-surface>
-        <span class="post-titlebar-date" id="post-titlebar-date"></span>
-        <span class="post-titlebar-title" id="post-titlebar-title"></span>
-      </div>
-    </div>
     <div class="post-panel">
       <div class="post-header">
         <p class="post-eyebrow" id="post-meta"></p>
@@ -692,7 +696,7 @@
         note: 'Playground · Tools · Lab · Life'
       },
       blog: {
-        eyebrow: '',
+        eyebrow: 'Seongwoo Choi · sonic240612',
         title: 'Blog',
         desc: '',
         note: ''

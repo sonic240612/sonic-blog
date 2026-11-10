@@ -421,6 +421,8 @@
     const [background, accent] = colorsFor(post);
     postShell.style.setProperty('--art-bg', background);
     postShell.style.setProperty('--art-color', accent);
+    // 제목 고정 바는 탭 바 안쪽에 있으므로 포스트 색을 따로 물려받습니다.
+    titlebar.style.setProperty('--art-color', accent);
     postTitle.textContent = post.title;
     postMeta.textContent = formatDate(post.date);
     titlebarTitle.textContent = post.title;
@@ -461,16 +463,31 @@
   }
 
   /* ---- 고정 제목 바 --------------------------------------------------
-     본문 머릿글이 스크롤로 화면 위로 나가면 제목을 유리 배경과 함께 남깁니다.
-     위에 고정된 탭 바가 같이 줄어들므로 아래 붙일 간격은 그때그때 잽니다. */
+     본문 머릿글이 화면 밖으로 나가면 제목을 탭 바 한가운데에 얹습니다.
+     얹을 폭은 좌우 단추 가장자리에서 재고, 탭 바가 줄어들거나 창 폭이 좁으면
+     단추 아래로 내립니다. */
   let titlebarFrame = 0;
   let titlebarTimer = 0;
   function syncTitlebar() {
     titlebarFrame = 0;
-    const top = Math.round((tabsBar ? tabsBar.getBoundingClientRect().bottom : 90) + 10);
-    document.documentElement.style.setProperty('--post-titlebar-top', top + 'px');
+    if (!tabsBar) return;
+    const bar = tabsBar.getBoundingClientRect();
+    const leftGroup = document.querySelector('.section-control');
+    const rightGroup = document.querySelector('.post-control:not([hidden])') || document.querySelector('.sort-control:not([hidden])');
+    const left = leftGroup ? Math.round(leftGroup.getBoundingClientRect().right - bar.left + 18) : 18;
+    const right = rightGroup ? Math.round(bar.right - rightGroup.getBoundingClientRect().left + 18) : 18;
+    const room = Math.round(bar.width - left - right);
+    if (room < 200) {
+      titlebar.classList.add('is-below');
+      tabsBar.style.setProperty('--titlebar-left', '0px');
+      tabsBar.style.setProperty('--titlebar-right', '0px');
+    } else {
+      titlebar.classList.remove('is-below');
+      tabsBar.style.setProperty('--titlebar-left', left + 'px');
+      tabsBar.style.setProperty('--titlebar-right', right + 'px');
+    }
     if (body.dataset.view !== 'post') { titlebar.classList.remove('is-shown'); return; }
-    titlebar.classList.toggle('is-shown', postHeader.getBoundingClientRect().bottom <= top);
+    titlebar.classList.toggle('is-shown', postHeader.getBoundingClientRect().bottom <= bar.bottom);
   }
   // 탭 바가 줄어드는 애니메이션이 끝난 뒤에 한 번 더 재야 정확히 붙습니다.
   function requestTitlebar() {
