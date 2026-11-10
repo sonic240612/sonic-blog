@@ -215,8 +215,8 @@
 /* 스크롤을 내리면 섹션·카테고리·태그 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
 [data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control) .tab-btn { min-height: 42px; gap: 0; }
 [data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; }
-/* 포스트를 읽을 때 되돌아가기·원문 단추를 필터가 있던 한가운데 칸에 둡니다. */
-[data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 10px; margin-inline: auto; }
+/* 포스트를 읽을 때 되돌아가기·원문 단추를 정렬 단추가 있던 오른쪽 칸에 둡니다. */
+[data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 10px; }
 [data-theme="liquid-glass"] .post-control[hidden] { display: none; }
 [data-theme="liquid-glass"] .post-control :is(.post-back, .post-source) { transition: min-height .4s cubic-bezier(.2,.8,.2,1), padding .4s cubic-bezier(.2,.8,.2,1), color .2s; }
 [data-theme="liquid-glass"].glass-compact .post-control :is(.post-back, .post-source) { min-height: 42px; padding-block: 6px; }
@@ -274,6 +274,10 @@
   box-shadow: var(--surface-shadow), 0 5px 12px rgba(0,0,0,.08);
 }
 [data-theme="liquid-glass"][data-mode="dark"].glass-scrolled [data-liquid-surface] { --glass-fill: rgba(24,26,32,.55); }
+/* 본문 글자 위에 얹히는 제목 고정 바는 유리를 한 겹 더 짙게 세웁니다. */
+[data-theme="liquid-glass"] .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); border-radius: 20px; }
+[data-theme="liquid-glass"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
+[data-theme="liquid-glass"][data-mode="dark"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
 
 @media (max-width: 1184px) {
   [data-theme="liquid-glass"] main,
@@ -298,7 +302,7 @@
   [data-theme="liquid-glass"] .section-control { order: 1; }
   [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 92px; min-height: 44px; }
   [data-theme="liquid-glass"] .sort-control { order: 2; margin-left: auto; }
-  [data-theme="liquid-glass"] .post-control { order: 3; width: 100%; margin: 0; }
+  [data-theme="liquid-glass"] .post-control { order: 3; width: 100%; margin: 0; justify-content: flex-end; }
   [data-theme="liquid-glass"] .category-control { order: 3; width: 100%; justify-content: space-between; }
   [data-theme="liquid-glass"] .category-control .tab-btn { flex: 1; min-width: 0; padding-inline: 5px; font-size: .61rem; min-height: 56px; }
   /* 태그 단추는 개수가 적을 때 줄 전체 폭으로 늘어나지 않게 좌측에 붙입니다. */

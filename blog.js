@@ -20,6 +20,11 @@
   const postBody = document.getElementById('post-body');
   const postSource = document.getElementById('post-source');
   const postNav = document.getElementById('post-nav');
+  const titlebar = document.getElementById('post-titlebar');
+  const titlebarDate = document.getElementById('post-titlebar-date');
+  const titlebarTitle = document.getElementById('post-titlebar-title');
+  const postHeader = postShell.querySelector('.post-header');
+  const tabsBar = document.querySelector('.tabs');
   const body = document.body;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -418,6 +423,8 @@
     postShell.style.setProperty('--art-color', accent);
     postTitle.textContent = post.title;
     postMeta.textContent = formatDate(post.date);
+    titlebarTitle.textContent = post.title;
+    titlebarDate.textContent = formatDate(post.date);
     postSource.href = DIR + post.file;
     postTags.textContent = '';
     post.tags.forEach(value => {
@@ -453,9 +460,29 @@
     });
   }
 
+  /* ---- 고정 제목 바 --------------------------------------------------
+     본문 머릿글이 스크롤로 화면 위로 나가면 제목을 유리 배경과 함께 남깁니다.
+     위에 고정된 탭 바가 같이 줄어들므로 아래 붙일 간격은 그때그때 잽니다. */
+  let titlebarFrame = 0;
+  let titlebarTimer = 0;
+  function syncTitlebar() {
+    titlebarFrame = 0;
+    const top = Math.round((tabsBar ? tabsBar.getBoundingClientRect().bottom : 90) + 10);
+    document.documentElement.style.setProperty('--post-titlebar-top', top + 'px');
+    if (body.dataset.view !== 'post') { titlebar.classList.remove('is-shown'); return; }
+    titlebar.classList.toggle('is-shown', postHeader.getBoundingClientRect().bottom <= top);
+  }
+  // 탭 바가 줄어드는 애니메이션이 끝난 뒤에 한 번 더 재야 정확히 붙습니다.
+  function requestTitlebar() {
+    if (!titlebarFrame) titlebarFrame = requestAnimationFrame(syncTitlebar);
+    clearTimeout(titlebarTimer);
+    titlebarTimer = setTimeout(syncTitlebar, 420);
+  }
+
   function setView(view) {
     body.dataset.view = view;
     if (view === 'list' && portal().section === 'blog') document.title = 'Blog · My Projects';
+    requestTitlebar();
   }
 
   function openPost(slug) {
@@ -550,6 +577,8 @@
   });
 
   window.addEventListener('hashchange', () => sync());
+  window.addEventListener('scroll', requestTitlebar, { passive: true });
+  window.addEventListener('resize', requestTitlebar);
 
   function backToList() {
     const stepBack = openedByClick && history.length > 1;
