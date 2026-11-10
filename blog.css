@@ -55,7 +55,6 @@ a.post-card { color: inherit; text-decoration: none; }
   gap: 20px;
 }
 .post[hidden] { display: none; }   /* display:flex가 [hidden]을 이기지 못합니다. */
-.post-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .post-back {
   display: inline-flex;
   align-items: center;
@@ -102,10 +101,7 @@ a.post-card { color: inherit; text-decoration: none; }
   gap: 12px 28px;
   align-items: start;
   padding: 4px 0 22px;
-  background: none;
   border-bottom: 1px solid var(--prose-rule);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 .post-eyebrow {
   grid-column: 1;

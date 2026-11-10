@@ -294,6 +294,13 @@
   <div class="tag-control" data-liquid-surface role="group" aria-label="태그 선택" hidden>
   <span class="selection-lens" aria-hidden="true"></span>
   </div>
+  <div class="post-control" id="post-control" role="group" aria-label="포스트 조작" hidden>
+    <button class="post-back" id="post-back" data-liquid-surface type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+      <span>Blog</span>
+    </button>
+    <a class="post-source" id="post-source" href="#" target="_blank" rel="noopener" data-liquid-surface>원문 Markdown</a>
+  </div>
   <span class="tabs-divider" aria-hidden="true"></span>
   <div class="sort-control" data-liquid-surface role="group" aria-label="정렬 순서">
   <span class="selection-lens" aria-hidden="true"></span>
@@ -482,19 +489,12 @@
   <p class="blog-status" id="blog-status" role="status" hidden></p>
 
   <article class="post" id="post-view" hidden aria-labelledby="post-title">
-    <div class="post-toolbar">
-      <button class="post-back" id="post-back" data-liquid-surface type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
-        <span>Blog</span>
-      </button>
-      <a class="post-source" id="post-source" href="#" target="_blank" rel="noopener" data-liquid-surface>원문 Markdown</a>
-    </div>
     <div class="post-panel">
-      <header class="post-header">
+      <div class="post-header">
         <p class="post-eyebrow" id="post-meta"></p>
         <h1 class="post-title" id="post-title"></h1>
         <ul class="post-tags" id="post-tags"></ul>
-      </header>
+      </div>
       <div class="prose" id="post-body"></div>
     </div>
     <nav class="post-nav" id="post-nav" aria-label="이전 · 다음 실험 기록"></nav>
@@ -676,6 +676,8 @@
     const postView = document.getElementById('post-view');
     const categoryControl = document.querySelector('.category-control');
     const tagControl = document.querySelector('.tag-control');
+    const postControl = document.getElementById('post-control');
+    const sortControl = document.querySelector('.sort-control');
     const introCopy = {
       projects: {
         eyebrow: 'Seongwoo Choi · Personal collection',
@@ -708,8 +710,10 @@
         blogView.hidden = !blogOpen || postOpen;
         postView.hidden = !postOpen;
         categoryControl.hidden = portal.section !== 'projects';
-        // 포스트를 읽고 있는 동안에는 목록 필터 바를 숨깁니다.
+        // 포스트를 읽고 있는 동안에는 목록 필터 바를 숨기고, 되돌아가기·원문 단추를 같은 자리에 보여줍니다.
         tagControl.hidden = portal.section !== 'blog' || postOpen;
+        postControl.hidden = !postOpen;
+        sortControl.hidden = postOpen;
         const copy = introCopy[portal.section];
         const introEyebrow = document.getElementById('intro-eyebrow');
         const introDesc = document.getElementById('intro-desc');
