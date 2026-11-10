@@ -211,9 +211,9 @@
 [data-theme="liquid-glass"] .tab-btn:active { transform: scale(.94); }
 [data-theme="liquid-glass"] .tab-icon { display: block; width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 [data-theme="liquid-glass"] .tab-label { display: block; max-height: 16px; opacity: 1; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .22s, transform .3s; }
-[data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control, .post-control) .tab-btn { transition: min-height .4s cubic-bezier(.2,.8,.2,1), gap .4s, color .2s; }
-/* 스크롤을 내리면 섹션·카테고리·태그·포스트 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
-[data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control, .post-control) .tab-btn { min-height: 42px; gap: 0; }
+[data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) .tab-btn { transition: min-height .4s cubic-bezier(.2,.8,.2,1), gap .4s, color .2s; }
+/* 스크롤을 내리면 섹션·카테고리·태그·포스트·정렬 단추가 함께 줄어들어 조작 계층이 가벼워집니다. */
+[data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) .tab-btn { min-height: 42px; gap: 0; }
 [data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; }
 /* 포스트를 읽을 때 되돌아가기·원문 단추를 정렬 단추가 있던 오른쪽 칸에 둡니다. */
 [data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 8px; }
@@ -239,7 +239,7 @@
   transform: none;
   justify-content: flex-start;
 }
-[data-theme="liquid-glass"] .sort-btn { min-height: 40px; min-width: 72px; padding: 9px 14px; font-size: .75rem; }
+/* 정렬 단추는 다른 탭과 같은 뼈대(.tab-btn)를 쓰므로 위 규칙대로 58px → 42px로 늘어났다 줄어듭니다. */
 [data-theme="liquid-glass"] .selection-lens {
   display: block;
   position: absolute;
@@ -306,7 +306,7 @@
 @media (max-width: 800px) {
   [data-theme="liquid-glass"] .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
   [data-theme="liquid-glass"] .tab-btn { min-width: 66px; padding-inline: 10px; }
-  [data-theme="liquid-glass"] .sort-btn { min-width: 60px; }
+  [data-theme="liquid-glass"] .sort-control .tab-btn { min-width: 72px; }
 }
 @media (max-width: 640px) {
   [data-theme="liquid-glass"] .header-actions { margin-left: auto; }
@@ -329,7 +329,7 @@
   /* 태그 단추는 개수가 적을 때 줄 전체 폭으로 늘어나지 않게 좌측에 붙입니다. */
   [data-theme="liquid-glass"] .tag-control { order: 3; width: 100%; justify-content: flex-start; gap: 8px; }
   [data-theme="liquid-glass"] .tag-control .tab-btn { flex: 0 1 auto; min-width: 84px; padding-inline: 18px; font-size: .7rem; min-height: 56px; }
-  [data-theme="liquid-glass"] .sort-btn { min-height: 34px; min-width: 62px; font-size: .68rem; padding: 8px 12px; }
+  [data-theme="liquid-glass"] .sort-control .tab-btn { min-height: 56px; min-width: 84px; padding-inline: 16px; font-size: .7rem; }
   [data-theme="liquid-glass"] main { margin: 20px 16px 0; }
   [data-theme="liquid-glass"] .grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
   [data-theme="liquid-glass"] .project-art { height: 168px; }
