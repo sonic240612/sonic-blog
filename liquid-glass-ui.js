@@ -14,7 +14,7 @@
     x: '--lens-x', y: '--lens-y', width: '--lens-width', height: '--lens-height',
     scaleX: '--lens-scale-x', scaleY: '--lens-scale-y', rotate: '--lens-rotate'
   };
-  const states = [...document.querySelectorAll('.category-control, .sort-control')].map(group => ({
+  const states = [...document.querySelectorAll('.section-control, .category-control, .tag-control, .sort-control')].map(group => ({
     group,
     buttons: [...group.querySelectorAll('.tab-btn')],
     value: { x: 0, y: 0, width: 0, height: 0, scaleX: 1, scaleY: 1, rotate: 0 },
@@ -217,11 +217,11 @@
   }
 
   for (const state of states) {
-    const { group, buttons } = state;
+    const group = state.group;
     group.addEventListener('pointerdown', event => {
       if (!active() || event.button !== 0 || event.isPrimary === false) return;
       const button = event.target.closest?.('.tab-btn');
-      if (!button || !buttons.includes(button) || button.disabled) return;
+      if (!button || !state.buttons.includes(button) || button.disabled) return;
       finishDrag(state, null, true);
       state.suppressClickUntil = 0;
       body.classList.remove('glass-compact');
@@ -273,6 +273,7 @@
 
     group.addEventListener('keydown', event => {
       if (!active() || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      const buttons = state.buttons;
       const index = buttons.indexOf(event.target);
       if (index === -1) return;
       event.preventDefault();
@@ -284,7 +285,14 @@
       buttons[next].focus({ preventScroll: true });
     });
 
-    new MutationObserver(schedule).observe(group, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
+    // Filter buttons are rebuilt when posts are loaded or a tag is picked, so the
+    // lens must re-read the button list instead of keeping the markup it saw at boot.
+    new MutationObserver(mutations => {
+      if (mutations.some(m => m.addedNodes.length || m.removedNodes.length)) {
+        state.buttons = [...group.querySelectorAll('.tab-btn')];
+      }
+      schedule();
+    }).observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-pressed', 'disabled'] });
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(schedule).observe(group);
   }
 

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>My Projects</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ffffff'/><stop offset='1' stop-color='%23cfe0f5'/></linearGradient></defs><rect width='32' height='32' rx='9' fill='url(%23g)'/><rect x='5' y='11' width='22' height='10' rx='5' fill='%23a8c6ea'/><circle cx='12' cy='16' r='3.2' fill='%23ffffff'/></svg>">
 <style>
   :root {
     --safe-area-top: env(safe-area-inset-top, 0px);
@@ -21,38 +22,10 @@
     --header-bg: rgba(255,255,255,0.8);
     --toggle-bg: #e8ecf1;
     --toggle-color: #333;
-    --particles: none;
     --glow: none;
   }
-  [data-theme="simple"][data-mode="dark"] {
-    --bg: #12121e;
-    --card-bg: #1e1e32;
-    --card-shadow: 0 2px 12px rgba(0,0,0,0.35);
-    --card-border: 1px solid #2e2e4a;
-    --text: #e0e0ee;
-    --text-secondary: #8888aa;
-    --accent: #6b8cff;
-    --accent-hover: #8ba8ff;
-    --header-bg: rgba(18,18,30,0.88);
-    --toggle-bg: #2a2a44;
-    --toggle-color: #e0e0ee;
-  }
-  [data-theme="animated"] {
-    --bg: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    --card-bg: rgba(255,255,255,0.06);
-    --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    --card-border: 1px solid rgba(255,255,255,0.10);
-    --text: #f0f0ff;
-    --text-secondary: #b0b0d0;
-    --accent: #7c5cfc;
-    --accent-hover: #9b7fff;
-    --header-bg: rgba(15,12,41,0.7);
-    --toggle-bg: rgba(255,255,255,0.10);
-    --toggle-color: #f0f0ff;
-    --particles: block;
-    --glow: 0 0 30px rgba(124,92,252,0.15);
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
     background: var(--bg);
@@ -65,41 +38,6 @@
     position: relative;
     overflow-x: hidden;
   }
-
-  #particles {
-    display: var(--particles);
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .particle {
-    position: absolute;
-    width: 4px; height: 4px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 50%;
-    animation: float linear infinite;
-  }
-  @keyframes float {
-    0% { transform: translateY(100vh) scale(0); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-  }
-  .particle:nth-child(1) { left: 10%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: 0s; }
-  .particle:nth-child(2) { left: 25%; width: 5px; height: 5px; animation-duration: 18s; animation-delay: 2s; }
-  .particle:nth-child(3) { left: 40%; width: 2px; height: 2px; animation-duration: 14s; animation-delay: 5s; }
-  .particle:nth-child(4) { left: 55%; width: 4px; height: 4px; animation-duration: 20s; animation-delay: 1s; }
-  .particle:nth-child(5) { left: 70%; width: 3px; height: 3px; animation-duration: 16s; animation-delay: 7s; }
-  .particle:nth-child(6) { left: 85%; width: 5px; height: 5px; animation-duration: 22s; animation-delay: 3s; }
-  .particle:nth-child(7) { left: 50%; width: 2px; height: 2px; animation-duration: 15s; animation-delay: 9s; }
-  .particle:nth-child(8) { left: 15%; width: 4px; height: 4px; animation-duration: 19s; animation-delay: 4s; }
-  .particle:nth-child(9) { left: 65%; width: 3px; height: 3px; animation-duration: 13s; animation-delay: 6s; }
-  .particle:nth-child(10) { left: 90%; width: 5px; height: 5px; animation-duration: 17s; animation-delay: 8s; }
-  .particle:nth-child(11) { left: 35%; width: 2px; height: 2px; animation-duration: 21s; animation-delay: 2s; }
-  .particle:nth-child(12) { left: 75%; width: 4px; height: 4px; animation-duration: 14s; animation-delay: 5s; }
 
   header {
     position: relative;
@@ -170,32 +108,8 @@
     display: block;
   }
   #mode-toggle:disabled { opacity: 0.5; cursor: default; transform: none; }
-  #theme-toggle {
-    position: relative;
-    z-index: 2;
-    appearance: none;
-    border: var(--card-border);
-    background: var(--toggle-bg);
-    color: var(--toggle-color);
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(4px);
-  }
-  #theme-toggle:hover {
-    transform: scale(1.04);
-    box-shadow: var(--glow);
-  }
-  #theme-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; min-width: 155px; }
-  .theme-dots { display: flex; gap: 3px; }
-  .theme-dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: 0.25; }
-  .theme-dots i.active { opacity: 1; }
   button { font-family: inherit; }
   :is(button, a):focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
-  .glass-scene, .glass-intro, .glass-footer, .project-meta { display: none; }
 
   main {
     position: relative;
@@ -203,6 +117,8 @@
     max-width: 960px;
     margin: 40px auto 60px;
     padding: 0 24px 40px;
+  }
+  .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 28px;
@@ -255,14 +171,9 @@
     color: var(--accent);
     background: transparent;
   }
-  [data-theme="simple"] .card .links a:hover {
+  .card .links a:hover {
     background: var(--accent);
     color: #fff;
-  }
-  [data-theme="animated"] .card .links a:hover {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 0 20px rgba(124,92,252,0.35);
   }
   .card .links a svg {
     width: 16px;
@@ -317,7 +228,8 @@
   @media (max-width: 640px) {
     header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
     header h1 { font-size: 1.2rem; }
-    main { margin-top: 32px; gap: 20px; padding: 0 16px 40px; }
+    main { margin-top: 32px; padding: 0 16px 40px; }
+    .grid { gap: 20px; }
     .card { padding: 24px 20px; }
     .card h2 { font-size: 1.25rem; }
     .tabs { margin-top: 24px; }
@@ -325,8 +237,10 @@
 
 </style>
 <link rel="stylesheet" href="liquid-glass.css">
+<link rel="stylesheet" href="blog.css">
 <script src="liquid-glass.js" defer></script>
 <script src="liquid-glass-ui.js" defer></script>
+<script src="blog.js" defer></script>
 </head>
 <body data-theme="liquid-glass" data-mode="light" data-liquid-motion="full">
 <script>
@@ -341,14 +255,6 @@
   })();
 </script>
 <div class="glass-scene" aria-hidden="true"></div>
-<div id="particles" aria-hidden="true">
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-</div>
 
 <header>
   <a class="title-area" data-liquid-surface href="https://github.com/sonic240612" target="_blank" rel="noopener" aria-label="GitHub profile">
@@ -362,20 +268,21 @@
     <button id="mode-toggle" data-liquid-surface aria-label="Toggle light/dark mode">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
     </button>
-    <button id="theme-toggle" data-liquid-surface type="button" aria-label="디자인: Liquid Glass. Animated로 변경" title="Animated → Simple → Liquid Glass">
-      <span class="theme-name">Liquid Glass</span>
-      <span class="theme-dots" aria-hidden="true"><i></i><i></i><i class="active"></i></span>
-    </button>
   </div>
 </header>
 
 <section class="glass-intro" aria-labelledby="intro-title">
-  <p class="eyebrow">Seongwoo Choi · Personal collection</p>
+  <p class="eyebrow" id="intro-eyebrow">Seongwoo Choi · Personal collection</p>
   <h2 id="intro-title">Projects.</h2>
-  <p class="intro-desc">직접 만들고, 실험하고, 일상에 더해가는 프로젝트.</p>
+  <p class="intro-desc" id="intro-desc">직접 만들고, 실험하고, 일상에 더해가는 프로젝트.</p>
 </section>
 
-<nav class="tabs" aria-label="Project categories">
+<nav class="tabs" aria-label="섹션과 필터">
+  <div class="section-control" data-liquid-surface role="group" aria-label="섹션 선택">
+  <span class="selection-lens" aria-hidden="true"></span>
+  <button class="tab-btn active" data-section="projects" aria-pressed="true">Projects</button>
+  <button class="tab-btn" data-section="blog" aria-pressed="false">Blog</button>
+  </div>
   <div class="category-control" data-liquid-surface role="group" aria-label="카테고리 선택">
   <span class="selection-lens" aria-hidden="true"></span>
   <button class="tab-btn active" data-category="all">All</button>
@@ -383,6 +290,9 @@
   <button class="tab-btn" data-category="tools">Tools</button>
   <button class="tab-btn" data-category="lab">Lab</button>
   <button class="tab-btn" data-category="life">Life</button>
+  </div>
+  <div class="tag-control" data-liquid-surface role="group" aria-label="태그 선택" hidden>
+  <span class="selection-lens" aria-hidden="true"></span>
   </div>
   <span class="tabs-divider" aria-hidden="true"></span>
   <div class="sort-control" data-liquid-surface role="group" aria-label="정렬 순서">
@@ -393,6 +303,7 @@
 </nav>
 
 <main>
+  <div class="grid" id="projects-view">
   <div class="card" data-category="playground" data-date="2026-10-13">
     <h2>beatsync</h2>
     <p class="desc">실시간 멀티플레이어 음악 퀴즈 &amp; 타임라인 카드 배틀 웹 게임</p>
@@ -565,18 +476,40 @@
     <h2>Mars Panic!!!</h2>
     <p class="desc">비공개 프로젝트</p>
   </div>
+  </div>
+
+  <div class="grid" id="blog-view" hidden></div>
+  <p class="blog-status" id="blog-status" role="status" hidden></p>
+
+  <article class="post" id="post-view" hidden aria-labelledby="post-title">
+    <div class="post-toolbar">
+      <button class="post-back" id="post-back" data-liquid-surface type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        <span>Blog</span>
+      </button>
+      <a class="post-source" id="post-source" href="#" target="_blank" rel="noopener">원문 Markdown</a>
+    </div>
+    <div class="post-panel">
+      <header class="post-header">
+        <p class="post-eyebrow" id="post-meta"></p>
+        <h1 class="post-title" id="post-title"></h1>
+        <ul class="post-tags" id="post-tags"></ul>
+      </header>
+      <div class="prose" id="post-body"></div>
+    </div>
+    <nav class="post-nav" id="post-nav" aria-label="이전 · 다음 실험 기록"></nav>
+  </article>
 </main>
-<footer class="glass-footer"><span>Built with curiosity.</span><span>Playground · Tools · Lab · Life</span></footer>
+<footer class="glass-footer"><span>Built with curiosity.</span><span id="footer-note">Playground · Tools · Lab · Life</span></footer>
 <script>
   (function() {
     const body = document.body;
-    const themeBtn = document.getElementById('theme-toggle');
     const modeBtn = document.getElementById('mode-toggle');
-    const themes = ['animated', 'simple', 'liquid-glass'];
-    const themeLabels = { animated: 'Animated', simple: 'Simple', 'liquid-glass': 'Liquid Glass' };
     function readPreference(key) {
       try { return localStorage.getItem('projects-portal-' + key); } catch { return null; }
     }
+    // Only the Liquid Glass design ships now, so drop any theme choice saved by older builds.
+    try { localStorage.removeItem('projects-portal-theme'); } catch {}
     const motionBtn = document.getElementById('motion-toggle');
     // Effects start enabled; only an explicit site-level opt-out disables them.
     let motionPreference = readPreference('motion') === 'reduced' ? 'reduced' : 'full';
@@ -602,24 +535,10 @@
       }
     }
 
-    function setTheme(theme) {
-      body.setAttribute('data-theme', theme);
-      const index = themes.indexOf(theme);
-      const nextLabel = themeLabels[themes[(index + 1) % themes.length]];
-      themeBtn.querySelector('.theme-name').textContent = themeLabels[theme];
-      themeBtn.querySelectorAll('.theme-dots i').forEach(function(dot, i) { dot.classList.toggle('active', i === index); });
-      themeBtn.setAttribute('aria-label', '디자인: ' + themeLabels[theme] + '. ' + nextLabel + '로 변경');
-      themeBtn.title = '현재: ' + themeLabels[theme] + ' · 클릭하면 ' + nextLabel;
-      syncModeControl();
-      try { localStorage.setItem('projects-portal-theme', theme); } catch {}
-    }
-
     function syncModeControl() {
-      const animated = body.dataset.theme === 'animated';
-      const mode = animated ? 'dark' : body.dataset.mode;
-      modeBtn.disabled = animated;
+      const mode = body.dataset.mode;
       syncModeIcon(mode);
-      const label = animated ? 'Animated 디자인은 다크 모드로 표시됩니다' : (mode === 'dark' ? '라이트 모드로 변경' : '다크 모드로 변경');
+      const label = mode === 'dark' ? '라이트 모드로 변경' : '다크 모드로 변경';
       modeBtn.setAttribute('aria-label', label);
       modeBtn.title = label;
       body.style.colorScheme = mode;
@@ -633,18 +552,13 @@
       }
     }
 
-    themeBtn.addEventListener('click', function() {
-      const cur = body.getAttribute('data-theme');
-      setTheme(themes[(themes.indexOf(cur) + 1) % themes.length]);
-    });
-
     modeBtn.addEventListener('click', function() {
       const cur = body.getAttribute('data-mode') || 'light';
       setMode(cur === 'light' ? 'dark' : 'light');
     });
 
     const tabBtns = document.querySelectorAll('.tab-btn[data-category]');
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll('#projects-view .card');
     const categoryIcons = {
       all: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
       playground: '<rect x="3" y="6" width="18" height="13" rx="4"/><path d="M7 10v5m-2.5-2.5h5M16 11h.01M18 14h.01"/>',
@@ -705,6 +619,7 @@
     });
 
     function applyCategory(cat) {
+      portal.category = cat;
       cards.forEach(function(card) {
         card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
       });
@@ -722,11 +637,11 @@
       });
     });
 
-    const mainGrid = document.querySelector('main');
+    const mainGrid = document.getElementById('projects-view');
     const sortNewestBtn = document.getElementById('sort-newest');
     const sortOldestBtn = document.getElementById('sort-oldest');
 
-    function applySort(order) {
+    function applySort(order, persist = true) {
       const sorted = Array.prototype.slice.call(cards).sort(function(a, b) {
         const da = a.dataset.date || '';
         const db = b.dataset.date || '';
@@ -737,18 +652,94 @@
       sortOldestBtn.classList.toggle('active', order === 'oldest');
       sortNewestBtn.setAttribute('aria-pressed', String(order === 'newest'));
       sortOldestBtn.setAttribute('aria-pressed', String(order === 'oldest'));
-      try { localStorage.setItem('projects-portal-sort', order); } catch {}
+      portal.sort = order;
+      if (persist) {
+        try { localStorage.setItem('projects-portal-sort', order); } catch {}
+        document.dispatchEvent(new CustomEvent('portal:sort', { detail: { order } }));
+      }
     }
 
     sortNewestBtn.addEventListener('click', function() { applySort('newest'); });
     sortOldestBtn.addEventListener('click', function() { applySort('oldest'); });
 
-    const savedTheme = readPreference('theme');
+    // ---- Sections: Projects / Blog -------------------------------------
+    // The controller owns which view and which filter group is visible.
+    // blog.js fills #blog-view / #post-view and toggles body.dataset.view.
+    const sectionBtns = Array.prototype.slice.call(document.querySelectorAll('.tab-btn[data-section]'));
+    const blogView = document.getElementById('blog-view');
+    const postView = document.getElementById('post-view');
+    const categoryControl = document.querySelector('.category-control');
+    const tagControl = document.querySelector('.tag-control');
+    const introCopy = {
+      projects: {
+        eyebrow: 'Seongwoo Choi · Personal collection',
+        title: 'Projects.',
+        desc: '직접 만들고, 실험하고, 일상에 더해가는 프로젝트.',
+        note: 'Playground · Tools · Lab · Life'
+      },
+      blog: {
+        eyebrow: '',
+        title: 'Blog',
+        desc: '',
+        note: ''
+      }
+    };
+
+    const portal = window.portal = {
+      section: 'projects',
+      category: 'all',
+      sort: 'newest',
+      setSection: function(section) {
+        portal.section = section === 'blog' ? 'blog' : 'projects';
+        const blogOpen = portal.section === 'blog';
+        const postOpen = blogOpen && body.dataset.view === 'post';
+        sectionBtns.forEach(function(btn) {
+          const on = btn.dataset.section === portal.section;
+          btn.classList.toggle('active', on);
+          btn.setAttribute('aria-pressed', String(on));
+        });
+        mainGrid.hidden = portal.section !== 'projects';
+        blogView.hidden = !blogOpen || postOpen;
+        postView.hidden = !postOpen;
+        categoryControl.hidden = portal.section !== 'projects';
+        tagControl.hidden = portal.section !== 'blog';
+        const copy = introCopy[portal.section];
+        const introEyebrow = document.getElementById('intro-eyebrow');
+        const introDesc = document.getElementById('intro-desc');
+        introEyebrow.textContent = copy.eyebrow;
+        introEyebrow.hidden = !copy.eyebrow;
+        document.getElementById('intro-title').textContent = copy.title;
+        introDesc.textContent = copy.desc;
+        introDesc.hidden = !copy.desc;
+        document.getElementById('footer-note').textContent = copy.note;
+        // 상태 메시지는 Blog 목록에서 텍스트가 실제로 있을 때만 보입니다.
+        const blogStatus = document.getElementById('blog-status');
+        blogStatus.hidden = !blogOpen || postOpen || !blogStatus.textContent;
+        document.title = blogOpen ? 'Blog · My Projects' : 'My Projects';
+        try { localStorage.setItem('projects-portal-section', portal.section); } catch {}
+        document.dispatchEvent(new CustomEvent('portal:section', { detail: { section: portal.section } }));
+      }
+    };
+
+    sectionBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const section = btn.dataset.section;
+        if (section === 'blog') {
+          if (!/^#\/blog/.test(location.hash)) location.hash = '#/blog';
+        } else if (/^#\//.test(location.hash)) {
+          // Clear the post route without jumping the page.
+          try { history.pushState(null, '', location.pathname + location.search); }
+          catch (error) { /* file:// 미리보기에서는 해시를 그대로 둡니다. */ }
+        }
+        portal.setSection(section);
+      });
+    });
+
     const savedCategory = readPreference('category');
-    setTheme(themes.includes(savedTheme) ? savedTheme : 'liquid-glass');
     setMode(body.dataset.mode, false);
     applyCategory(['all', 'playground', 'tools', 'lab', 'life'].includes(savedCategory) ? savedCategory : 'all');
-    applySort(readPreference('sort') === 'oldest' ? 'oldest' : 'newest');
+    applySort(readPreference('sort') === 'oldest' ? 'oldest' : 'newest', false);
+    portal.setSection(readPreference('section') === 'blog' ? 'blog' : 'projects');
   })();
 </script>
 </body>

@@ -1,6 +1,4 @@
 /* Content remains solid. Only the floating controls use Liquid Glass. */
-.category-control, .sort-control { display: contents; }
-.selection-lens, .tab-icon, .project-art, #motion-toggle { display: none; }
 .glass-filter-defs { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
 
 [data-theme="liquid-glass"] {
@@ -151,7 +149,7 @@
 [data-theme="liquid-glass"] header .title-area { cursor: pointer; }
 [data-theme="liquid-glass"] header .title-area svg { color: var(--text); width: 19px; height: 19px; }
 [data-theme="liquid-glass"] .header-actions { gap: 10px; }
-[data-theme="liquid-glass"] :is(#motion-toggle, #mode-toggle, #theme-toggle) {
+[data-theme="liquid-glass"] :is(#motion-toggle, #mode-toggle) {
   background: transparent;
   border: 0;
   backdrop-filter: none;
@@ -160,12 +158,11 @@
   transform: translate3d(var(--surface-x,0px),var(--surface-y,0px),0) scale(var(--surface-scale-x,1),var(--surface-scale-y,1));
   transition: box-shadow .3s, color .2s;
 }
-[data-theme="liquid-glass"] :is(#motion-toggle, #mode-toggle, #theme-toggle):hover { box-shadow: var(--surface-shadow); }
+[data-theme="liquid-glass"] :is(#motion-toggle, #mode-toggle):hover { box-shadow: var(--surface-shadow); }
 [data-theme="liquid-glass"] #motion-toggle { display: grid; place-items: center; width: 50px; height: 50px; padding: 0; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; }
 [data-theme="liquid-glass"] #motion-toggle[aria-pressed="true"] { color: var(--accent); }
 [data-theme="liquid-glass"] #motion-toggle svg { width: 21px; height: 21px; }
 [data-theme="liquid-glass"] #mode-toggle { width: 50px; height: 50px; color: var(--text); }
-[data-theme="liquid-glass"] #theme-toggle { height: 50px; font-size: 0.81rem; padding: 12px 19px; color: var(--text); }
 [data-theme="liquid-glass"] #mode-toggle svg { animation: mode-appear 0.32s ease; }
 @keyframes mode-appear { from { transform: rotate(-35deg) scale(.65); opacity: 0; } to { transform: none; opacity: 1; } }
 [data-theme="liquid-glass"] .glass-intro { display: block; position: relative; max-width: 1120px; margin: 54px auto 32px; padding: 0 4px; }
@@ -186,7 +183,8 @@
   gap: 16px;
   flex-wrap: nowrap;
 }
-[data-theme="liquid-glass"] :is(.category-control, .sort-control) { display: flex; padding: 6px; gap: 2px; touch-action: pan-y; }
+[data-theme="liquid-glass"] :is(.section-control, .category-control, .tag-control, .sort-control) { display: flex; padding: 6px; gap: 2px; touch-action: pan-y; }
+[data-theme="liquid-glass"] .tabs [hidden] { display: none; }
 [data-theme="liquid-glass"] .tabs-divider { display: none; }
 [data-theme="liquid-glass"] .tab-btn {
   display: flex;
@@ -232,7 +230,9 @@
   transition: none;
   will-change: left, width, transform;
 }
-[data-theme="liquid-glass"] main { position: relative; max-width: 1120px; padding: 0 0 32px; margin: 26px auto 0; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
+[data-theme="liquid-glass"] main { position: relative; max-width: 1120px; padding: 0 0 32px; margin: 26px auto 0; }
+[data-theme="liquid-glass"] .grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
+[data-theme="liquid-glass"] .grid[hidden] { display: none; }
 [data-theme="liquid-glass"] .card { padding: 0 22px 22px; border-radius: 24px; overflow: hidden; min-width: 0; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: var(--card-shadow); transition: transform .3s, box-shadow .3s; }
 [data-theme="liquid-glass"] .card::before { content: none; }
 [data-theme="liquid-glass"] .card:hover { transform: translateY(-3px); border-color: transparent; box-shadow: 0 10px 24px rgba(20,30,50,.09); }
@@ -274,7 +274,7 @@
   [data-theme="liquid-glass"] .glass-footer { margin-left: 32px; margin-right: 32px; }
 }
 @media (max-width: 800px) {
-  [data-theme="liquid-glass"] main { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+  [data-theme="liquid-glass"] .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
   [data-theme="liquid-glass"] .tab-btn { min-width: 66px; padding-inline: 10px; }
   [data-theme="liquid-glass"] .sort-btn { min-width: 60px; }
 }
@@ -285,16 +285,18 @@
   [data-theme="liquid-glass"] header h1 { font-size: .83rem; white-space: nowrap; }
   [data-theme="liquid-glass"] header .title-area svg { width: 17px; height: 17px; }
   [data-theme="liquid-glass"] .header-actions { gap: 7px; }
-  [data-theme="liquid-glass"] #theme-toggle { min-width: 133px; height: 44px; padding: 10px 12px; font-size: .72rem; gap: 8px; }
   [data-theme="liquid-glass"] :is(#mode-toggle,#motion-toggle) { width: 44px; height: 44px; }
   [data-theme="liquid-glass"] .glass-intro { margin: 40px 22px 25px; padding: 0; }
   .glass-intro .intro-desc { font-size: .81rem; }
   [data-theme="liquid-glass"] .tabs { top: calc(71px + var(--safe-area-top)); width: calc(100% - 32px); flex-wrap: wrap; gap: 12px; }
-  [data-theme="liquid-glass"] .category-control { width: 100%; justify-content: space-between; }
-  [data-theme="liquid-glass"] .category-control .tab-btn { flex: 1; min-width: 0; padding-inline: 5px; font-size: .61rem; min-height: 56px; }
-  [data-theme="liquid-glass"] .sort-control { margin-left: auto; }
+  [data-theme="liquid-glass"] .section-control { order: 1; }
+  [data-theme="liquid-glass"] .section-control .tab-btn { min-width: 92px; min-height: 44px; }
+  [data-theme="liquid-glass"] .sort-control { order: 2; margin-left: auto; }
+  [data-theme="liquid-glass"] :is(.category-control, .tag-control) { order: 3; width: 100%; justify-content: space-between; }
+  [data-theme="liquid-glass"] :is(.category-control, .tag-control) .tab-btn { flex: 1; min-width: 0; padding-inline: 5px; font-size: .61rem; min-height: 56px; }
   [data-theme="liquid-glass"] .sort-btn { min-height: 34px; min-width: 62px; font-size: .68rem; padding: 8px 12px; }
-  [data-theme="liquid-glass"] main { grid-template-columns: minmax(0,1fr); margin: 20px 16px 0; gap: 18px; }
+  [data-theme="liquid-glass"] main { margin: 20px 16px 0; }
+  [data-theme="liquid-glass"] .grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
   [data-theme="liquid-glass"] .project-art { height: 168px; }
   [data-theme="liquid-glass"] .project-app-icon { width: 88px; height: 88px; }
   [data-theme="liquid-glass"] .glass-footer { margin-inline: 22px; font-size: .63rem; }
@@ -306,7 +308,6 @@
 }
 @media (max-width: 380px) {
   [data-theme="liquid-glass"] :is(#mode-toggle,#motion-toggle) { width: 36px; height: 40px; }
-  [data-theme="liquid-glass"] #theme-toggle { min-width: 127px; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   [data-theme="liquid-glass"] [data-liquid-surface]::before { background: var(--glass-fallback); }
@@ -321,7 +322,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   body:not([data-theme="liquid-glass"]) *, body:not([data-theme="liquid-glass"]) *::before, body:not([data-theme="liquid-glass"]) *::after { animation: none !important; transition: none !important; }
-  .particle { display: none; }
 }
 [data-theme="liquid-glass"][data-liquid-motion="reduced"] *,
 [data-theme="liquid-glass"][data-liquid-motion="reduced"] *::before,

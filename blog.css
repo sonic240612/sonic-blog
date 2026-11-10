@@ -1,0 +1,281 @@
+/* 실험 기록(Blog) UI. 프로젝트 카드의 유리 글라스 표현을 그대로 재사용합니다. */
+
+.blog-status {
+  position: relative;
+  z-index: 1;
+  margin: 8px auto 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+/* 목록 카드 ------------------------------------------------------------------ */
+
+a.post-card { color: inherit; text-decoration: none; }
+.post-art { color: var(--art-color); }
+.post-art-glyph {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 88px;
+  height: 88px;
+  filter: drop-shadow(0 10px 12px color-mix(in srgb, var(--art-color) 26%, transparent));
+  transition: transform 0.4s cubic-bezier(.2,.8,.2,1.2);
+}
+[data-theme="liquid-glass"][data-liquid-motion="full"] .post-card:hover .post-art-glyph { transform: translateY(-3px) scale(1.045); }
+[data-theme="liquid-glass"] .post-card .post-category { text-transform: lowercase; letter-spacing: .04em; }
+.post-card .post-date { font-size: .63rem; font-weight: 650; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+.post-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: .76rem;
+  font-weight: 550;
+}
+.post-read svg { width: 14px; height: 14px; transition: transform 0.25s ease; }
+.post-card:hover .post-read { text-decoration: underline; }
+[data-theme="liquid-glass"][data-liquid-motion="full"] .post-card:hover .post-read svg { transform: translateX(4px); }
+
+/* 본문 ---------------------------------------------------------------------- */
+
+.post {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.post[hidden] { display: none; }   /* display:flex가 [hidden]을 이기지 못합니다. */
+.post-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.post-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.post-back svg { width: 17px; height: 17px; }
+.post-source {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.post-source:hover { color: var(--accent); }
+
+.post-panel {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: 26px;
+  box-shadow: var(--card-shadow);
+  padding: clamp(24px, 4vw, 44px);
+}
+/* 전역 header 스타일(배경·블러·flex)이 포스트 헤더에 스며들지 않게 정리합니다. */
+.post-header {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 12px 28px;
+  align-items: start;
+  padding: 4px 0 22px;
+  background: none;
+  border-bottom: 1px solid var(--prose-rule);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.post-eyebrow {
+  grid-column: 1;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--art-color);
+  margin: 0;
+}
+.post-title {
+  grid-column: 2;
+  font-size: clamp(1.45rem, 3.4vw, 2.1rem);
+  font-weight: 750;
+  line-height: 1.28;
+  letter-spacing: -0.03em;
+}
+.post-tags { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; list-style: none; }
+.post-tags a {
+  display: inline-flex;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--prose-rule);
+  background: var(--prose-soft);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.post-tags a:hover { color: var(--accent); border-color: var(--accent); }
+
+.post-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.post-nav:empty { display: none; }
+.post-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.post-nav-link:hover { transform: translateY(-3px); box-shadow: var(--surface-shadow, var(--card-shadow)); }
+.post-nav-link.next { text-align: right; }
+.post-nav-label { font-size: 0.66rem; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.post-nav-title { font-size: 0.88rem; font-weight: 620; letter-spacing: -0.01em; line-height: 1.4; }
+
+body[data-view="post"] .glass-intro { display: none; }
+
+/* 본문 타이포그래피 --------------------------------------------------------- */
+
+[data-theme="liquid-glass"] .prose {
+  --prose-rule: rgba(24,34,48,0.10);
+  --prose-soft: rgba(24,34,48,0.045);
+  --prose-code: rgba(24,34,48,0.065);
+  --prose-panel: rgba(24,34,48,0.025);
+}
+[data-theme="liquid-glass"][data-mode="dark"] .prose {
+  --prose-rule: rgba(255,255,255,0.11);
+  --prose-soft: rgba(255,255,255,0.055);
+  --prose-code: rgba(255,255,255,0.08);
+  --prose-panel: rgba(255,255,255,0.03);
+}
+.prose { color: var(--text); font-size: 0.95rem; line-height: 1.78; padding-top: 26px; overflow-wrap: break-word; }
+.prose > * + * { margin-top: 1.1em; }
+.prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { letter-spacing: -0.02em; line-height: 1.35; }
+.prose h2 { margin-top: 2.1em; font-size: 1.24rem; font-weight: 700; }
+.prose h3 { margin-top: 1.7em; font-size: 1.02rem; font-weight: 680; }
+.prose h4, .prose h5, .prose h6 { margin-top: 1.5em; font-size: 0.76rem; font-weight: 650; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-secondary); }
+.prose p { hyphens: none; }
+.prose strong { font-weight: 700; }
+.prose em { color: var(--text-secondary); }
+.prose ul, .prose ol { padding-left: 1.35em; }
+.prose li + li { margin-top: 0.42em; }
+.prose ul { list-style: none; }
+.prose ul li { position: relative; }
+.prose ul li::before {
+  content: '';
+  position: absolute;
+  left: -1.05em;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--art-color);
+  opacity: 0.75;
+}
+.prose ol { list-style: decimal; }
+.prose ol li::marker { color: var(--text-secondary); font-weight: 650; }
+.prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+.prose a:hover { border-bottom-color: var(--accent); }
+.prose hr { border: 0; border-top: 1px solid var(--prose-rule); margin: 2.2em 0; }
+.prose blockquote {
+  padding: 16px 20px;
+  border-radius: 16px;
+  border-left: 3px solid var(--art-color);
+  background: var(--prose-soft);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+.prose blockquote > * + * { margin-top: 0.5em; }
+.prose blockquote strong { color: var(--text); }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Noto Sans Mono', monospace;
+  font-size: 0.83em;
+  padding: 0.15em 0.42em;
+  border-radius: 6px;
+  background: var(--prose-code);
+}
+.prose pre.code-block {
+  position: relative;
+  margin-top: 1.6em;
+  padding: 34px 20px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--prose-rule);
+  background: var(--prose-panel);
+  overflow-x: auto;
+}
+.prose pre.code-block[data-lang]::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.prose pre.code-block code {
+  display: block;
+  padding: 0;
+  background: none;
+  font-size: 0.76rem;
+  line-height: 1.62;
+  white-space: pre;
+}
+.table-scroll {
+  border: 1px solid var(--prose-rule);
+  border-radius: 16px;
+  overflow-x: auto;
+}
+.prose table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.prose th, .prose td {
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--prose-rule);
+}
+.prose tr:last-child td { border-bottom: 0; }
+.prose thead th {
+  background: var(--prose-soft);
+  font-size: 0.72rem;
+  font-weight: 680;
+  white-space: nowrap;
+}
+.prose td.align-center, .prose th.align-center { text-align: center; }
+.prose td.align-right, .prose th.align-right { text-align: right; font-variant-numeric: tabular-nums; }
+.prose img { max-width: 100%; border-radius: 14px; }
+
+@media (max-width: 640px) {
+  .post { gap: 16px; }
+  .post-panel { border-radius: 22px; }
+  .post-header { grid-template-columns: 1fr; gap: 10px; padding-bottom: 18px; }
+  .post-eyebrow, .post-title, .post-tags { grid-column: 1; }
+  .prose { font-size: 0.9rem; }
+  .post-art-glyph { width: 74px; height: 74px; }
+}

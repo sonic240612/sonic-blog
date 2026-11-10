@@ -1,0 +1,157 @@
+---
+title: Strata 기반 Qwen3.8-Flash-Next 구동 및 벤치마크 리포트
+date: 2026-11-10
+tags: [llm, gpu, inference, benchmark]
+summary: RTX 3090 24GB·64GB RAM 환경에서 Qwen3.8-Flash-Next(IQ2_XS / IQ3_S / AD-405)를 실제로 적재·구동하고, 동일 복셀 프롬프트로 생성 결과와 산출된 검증 인프라까지 비교한 실측 기록.
+---
+
+# Strata 기반 Qwen3.8-Flash-Next 구동 및 벤치마크 리포트
+
+> **작성일:** 2026-11-10  
+> **테스트 환경:** NVIDIA GeForce RTX 3090 (24GB VRAM) / 64GB DDR4 RAM / PCIe 4.0 NVMe SSD / Windows 11  
+> **추론 엔진:** Strata v0.2.13.1 (Engine 0.1.59, CUDA 13)  
+> **대상 모델:** Qwen3.8-Flash-Next (`IQ2_XS`, `IQ3_S`, `AD-405`)
+
+---
+
+## 1. 하드웨어 및 메모리 아키텍처
+
+RTX 3090 (24GB VRAM)과 64GB 시스템 RAM 환경에서 대규모 MoE(Mixture of Experts) 모델인 Qwen3.8-Flash-Next를 구동하기 위한 계층적 메모리 배치 구조입니다.
+
+```mermaid
+flowchart TB
+    subgraph GPU["NVIDIA GeForce RTX 3090 (24GB VRAM)"]
+        Dense["Dense 어텐션 / KV 캐시 / MTP 드래프터 (~6.0 GiB)"]
+        VCache["GPU 전문가 VRAM 캐시 (6,527 ~ 11,472 전문가, ~14.5 GiB)"]
+    end
+
+    subgraph Host["Host System (64GB RAM + Commit 확장)"]
+        RCache["RAM 상주 전문가 (Pinned RAM, 0 ~ 35.82 GiB)"]
+        OS["Windows 11 OS 및 여유 메모리 공간"]
+    end
+
+    subgraph Storage["NVMe SSD (PCIe 4.0)"]
+        PLE["PLE n-gram 검색 테이블 (28.8 GB)"]
+        SWAP["가상 메모리 확장 영역 (pagefile.sys, 32 ~ 64 GB)"]
+    end
+
+    GPU <-->|PCIe 4.0 x16 (26.8 GB/s)| Host
+    Host <--> Storage
+```
+
+### 메모리 커밋 설정 (SSD 스래싱 방지)
+- Windows 환경에서 대용량 메모리 고정(Pinned RAM) 할당 실패 및 SSD 강제 페이징을 방지하기 위해 가상 메모리를 32~64GB로 확장(커밋 한계 ~102GB 확보).
+- `STRATA_RESIDENT_HEADROOM_GIB=4` 설정을 통해 35.82 GiB의 전문가 가중치를 물리 RAM에 100% 영구 상주시켜 SSD 읽기 횟수를 `files 0 blobs` (0회)로 유지.
+
+---
+
+## 2. 실제 테스트 모델 비교
+
+동일 하드웨어(RTX 3090 24GB, 64GB RAM)에서 실제로 직접 적재하고 구동을 진행했던 3가지 모델의 실측 제원 및 성능 데이터입니다.
+
+| 항목 | Qwen3.8-Flash-Next IQ2_XS | Qwen3.8-Flash-Next IQ3_S | Qwen3.8-Flash-Next AD-405 |
+| :--- | :---: | :---: | :---: |
+| **파일 크기 (Weight Size)** | 68.0 GB | 77.9 GB (PLE 포함 83.6 GiB) | 117.3 GB |
+| **평균 가중치 정밀도 (BPW)** | ~2.20 bpw | ~3.44 bpw | ~4.05 bpw |
+| **VRAM 적재 전문가 수** | 11,472 (100%) | 7,674 | 6,527 |
+| **RAM 상주 용량** | ~0 GB (RAM 여유) | 35.82 GiB (100% 상주) | ~58.0 GiB (물리 가용량 초과) |
+| **SSD I/O 스필 여부** | 없음 (`0 reads`) | 없음 (`0 reads`) | **발생 (SSD 스트리밍 활성화)** |
+| **토큰 생성 속도 (Decode)** | **60 ~ 95 tok/s** | **45 ~ 52.5 tok/s** | **22 ~ 44 tok/s** *(문맥 증가 시 ~12 tok/s)* |
+| **프롬프트 처리 속도 (Prompt)** | ~180 - 220 tok/s | ~120 - 150 tok/s | ~70 - 95 tok/s |
+| **최대 지원 문맥** | 256K | 131K | 131K |
+| **장기 문맥 유지력 (50K+)** | 속도 저하 없음 | 속도 저하 없음 (일정 유지) | SSD 페이징 경합으로 감속 |
+| **BF16 기준 지능 일치율** | 81.2% | 87.7% | 92.4% |
+| **구동 특성 요약** | VRAM에 전량 적재되어 최고 속도 달성.<br>복잡한 수식/쉐이더에서 세부 정밀도 저하. | 24GB VRAM + 36GB RAM 조합의 최적 상주.<br>지연 없는 인메모리 추론 및 안정적 속도. | 고난도 설계 및 검증 코드 작성 능력 우수.<br>64GB RAM 한계로 대용량 작업 시 SSD 병목. |
+
+---
+
+## 3. 복셀 벤치마크 (`Voxel Bench`) 구현 비교
+
+동일한 프롬프트인 **"Bioluminescent Abyssal Temple (생체발광 심해 사원 - 외부 모델이나 텍스처 없이 단일 WebGL/Three.js 기반 완전 절차적 3D 복셀 디오라마)"**에 대해 `IQ3_S`와 `AD-405`가 각각 작성한 프로젝트 결과물의 상세 사양과 구현 내용입니다.
+
+- **IQ3_S 프로젝트 경로:** `C:\Workspace\qwen-test` (2026-11-05 생성)
+- **AD-405 프로젝트 경로:** `C:\Workspace\qwen-test2` (2026-11-10 생성)
+
+### 3.1 기본 제원 및 파일 구성
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **메인 파일 크기** | 87.0 KB (`bioluminescent-abyssal-temple.html`) | 107.7 KB (`bioluminescent-abyssal-temple.html`) |
+| **총 코드 라인 수** | 1,978 LOC | 2,353 LOC |
+| **라이브러리 로딩** | 단일 CDN importmap (`jsdelivr` three@0.169.0) | 3단계 CDN 폴백 로더 (`unpkg` → `jsdelivr` → `esm.sh`) 및 에러 UI |
+| **소스 코드 구조** | 단일 모놀리식 스크립트<br>- 파트 분할 파일: `_js1.part`, `_js2.part`, `_js3.part`<br>- 단계별 스크립트: `_s1.js` ~ `_s12.js`, `_b1.js` ~ `_b8.js` | 5개 모듈 분할 아키텍처<br>- `_a_head.html`: HTML 쉘 및 스타일<br>- `_b_core.mjs`: 핵심 유틸, 씬/카메라/VoxelField<br>- `_c_world.mjs`: 지형, 사원, 키트, 다시마<br>- `_d_life.mjs`: 광원, 파티클, 해파리, 어군, 스펙클<br>- `_e_loop.mjs`: 렌더 루프, 입력 이벤트, 퀄리티 제어<br>- `_assemble.mjs`: 합본 빌드 스크립트 |
+
+---
+
+### 3.2 3D 지오메트리 및 렌더링 최적화
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **복셀 생성 방식** | **카테고리별 버킷 인스턴싱**<br>- `B(bucket, x, y, z, w, h, d, color)` 기반 배치<br>- `finalizeVoxels()`에서 버킷별 `InstancedMesh` 일괄 생성 | **절차적 키트 버퍼 병합 (`mergeBoxes`)**<br>- `VoxelField.add()`, `VoxelField.up()` 기반 배치<br>- 복합 복셀을 단일 `BufferGeometry`로 사전 합성 |
+| **지오메트리 키트** | 개별 박스(Box) 및 기본형(Ico, Cyl, Cone) 인스턴싱 | **7종 절차적 키트 사전 병합 (`KIT`)**<br>- Branch Coral (7개 박스 결합 촛대 산호)<br>- Tube Coral (수직 굴뚝형 군집)<br>- Sea Fan (격자형 부채 산호)<br>- Table Coral (단차형 평판 산호)<br>- Encrusted Rock Lump (암석 덩어리)<br>- Small Fish (몸체, 꼬리, 지느러미, 눈)<br>- Drift Fish (대형 체형) |
+| **드로우콜 (Draw Calls)** | 수백 회 이상 (버킷 및 씬 오브젝트별 개별 호출) | **55 calls** (키트 병합 및 인스턴싱 집약) |
+| **트라이앵글 수** | 수만 개 단위 추정 | **5,078 triangles** (실측치) |
+| **총 복셀/인스턴스 수** | 수천 개 복셀 인스턴스 | **총 3,556 instances**<br>- 지형: 1,504<br>- 디테일: 282<br>- 포장: 100<br>- 석재: 244<br>- 흑요석: 44<br>- 산호: 166<br>- 발광체: 213 |
+
+---
+
+### 3.3 사원 건축 및 환경 구성
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **기단 (Plinth/Terrace)** | 3단 기단(tiers) 및 덴틸(dentil) 코스 마감 | 3단 후퇴 테라스(Terraces) + 전면 코니스 립(cornice lip)<br>각 단 전면 모서리를 따라 청록색 발광 솔기 배치 |
+| **계단 및 진입로** | 9단 의식용 계단(ceremonial staircase) | 4단 광장 계단 + 계단 양측 난간 발광 큐브 |
+| **본당 및 회랑** | 바살트/흑요석 기둥, 격자 벽체 | 회랑 열주(Colonnade) 및 흑요석 주두 빔, 측면 창호 슬릿 |
+| **지붕 구조** | 3종 지붕 형태 (플레어 힙, 2단 파고다, 첨탑형) | 2단 흑요석 지붕 + 상단 처마 뿔(Horns) 및 모서리 산호 피복 |
+| **사원 상층부/유물** | 상층부 등롱 비콘 배치 | **부유 유물실(Relic Chamber)**<br>- 자전하는 옥타헤드론(Octahedron Relic)<br>- 톤매핑 우회(`toneMapped: false`, 발광 강도 3.2) |
+| **추가 랜드마크** | 도리이 게이트 2개소, 심해 균열(Rift), 석등롱 | 단차형 지형 포장, 해구(Chasm), 아치형 석재 브릿지 |
+
+---
+
+### 3.4 광원 및 쉐이더 시스템
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **주 광원 (Key Light)** | 기본 DirectionalLight + PointLight | DirectionalLight (2048x2048 PCF 소프트 섀도우,<br>바이어스 -0.0008, 노멀 바이어스 0.7, 반경 2.2) |
+| **보조/환경광** | HemisphereLight, 심해 안개(Exp2 Fog) | HemisphereLight (0x2c6f9e / 0x020610) +<br>카메라 방향 보정 Fill Light + 심해 언더라이트 (PointLight) |
+| **배경 돔 (Sky)** | 그라디언트 쿼드 배경 | 커스텀 ShaderMaterial SkyDome (반경 880 구체,<br>심해 심도별 산란 감쇄 수식 반영) |
+| **수면 표현** | 버텍스 변위 파동 쉐이더 | 커스텀 ShaderMaterial WaterCeiling (1500x1500 면,<br>이중 코사인/사인 Caustics 계산) |
+| **광선 (Light Rays)** | `makeRayMaterial` 기반 단순 광선 샤프트 | 커스텀 ShaderMaterial LightRays (임의 배치된 10여 개 샤프트,<br>노이즈 및 안개 감쇄 결합) |
+| **개구부 (Aperture)** | 원형 발광 개구부 및 안개 포털 | **Moon Aperture** (반경 115 CircleGeometry,<br>내부 암부 + 에지 림 + 주변 궤도 복셀 잔해군) |
+| **파티클 쉐이더** | 기본 파티클 포인트 클라우드 | **통합 GPU 파티클 쉐이더 (`POINT_VERT` / `POINT_FRAG`)**<br>- 카메라 근접 시 보케 과팽창 방지(`vNear` 감쇄)<br>- 깊이별 안개 감쇄 및 GPU 시간 기반 상승 모션 |
+
+---
+
+### 3.5 생명체 및 동적 애니메이션
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **해파리 (Jellyfish)** | 단일 메시 결합체 (반구형 벨 + 고정 다리)<br>- 사인파 기반 수직 부유 및 회전 | **12개체 다층 구조**<br>- InstancedMesh 벨(Bell) + 코어(Core)<br>- **개체당 7가닥 × 5마디 실시간 버퍼 업데이트 LineSegments 촉수**<br>- 펄스 수축 애니메이션 및 조류 흔들림 반영 |
+| **어군 (Fish)** | 단일 인스턴스 물고기<br>- 지정 반경 단순 궤도 선회 | **70마리 군집 시뮬레이션 + 5마리 대형어**<br>- 3개 독립 어군 (Cyan 24마리, Coral 20마리, Violet 26마리)<br>- Boids 기반 중심 회전, 진행 접선(`_tan`) 방향 자동 정렬,<br>  몸체 요잉(Yaw wobble) 유영 모션<br>- 대형 심해 표류어 5마리 독립 순항 |
+| **미세 입자/발광** | 부유 부유물 및 기포 포인트 클라우드 | 심해 모트(Motes, 560개) + 수직 기포 기둥(Bubbles, 210개) +<br>암초 표면 절차적 점멸 발광체(Speckles, 220개) |
+
+---
+
+### 3.6 사용자 인터랙션 및 런타임 제어
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **포인터/터치** | 단일 포인터 드래그 회전, 핀치 감지 | 멀티터치 핀치 줌, 포인터 드래그 회전 |
+| **줌 컨트롤** | 마우스 휠 선형 스텝 줌 | 지수 스무딩 휠 줌 (`Math.exp(clamp(deltaY, -220, 220) * 0.0011)`) |
+| **키보드 단축키** | Space (일시정지) | Space (일시정지), O (오토 오빗 토글), R (카메라 리셋) |
+| **HUD 인터페이스** | 수심, 궤도 각도, 등롱 모드, FPS 텍스트 표시 | 타이틀 카드, 오토 오빗 프로그레스 바, 상태 패널, 컨트롤 버튼군 |
+| **품질 조절 루프** | 단순 FPS 측정 후 픽셀비 단계적 증감 | **4단계 순환 적응형 퀄리티 시스템**<br>- `Quality 2 (High)`: 픽셀비 1.50, 4x MSAA, 그림자 ON<br>- `Quality 1 (Balanced)`: 픽셀비 1.23, 그림자 ON<br>- `Quality 0 (Smooth)`: 픽셀비 0.99, 그림자 OFF<br>- `Auto` 모드: 프레임 드랍 시 자동으로 q2 → q1 → q0 강등 |
+| **메모리 수명주기** | 브라우저 기본 GC 의존 | `beforeunload` 이벤트에서 `renderer.renderLists.dispose()`,<br>`renderer.dispose()` 명시적 호출 |
+
+---
+
+### 3.7 테스트 및 검증 인프라
+
+| 구분 | IQ3_S (`qwen-test`) | AD-405 (`qwen-test2`) |
+| :--- | :--- | :--- |
+| **검증 도구** | 셸 스크립트 기반 헤드리스 브라우저 실행 (`_shoot.sh`) | **자체 구축 헤드리스 자동화 테스트 스위트 (`.tmpverify`)** |
+| **헤드리스 렌더링** | 크롬 `--headless=new` 및 웹 서버 (`_serve.mjs`) | **Node.js Three.js 프록시 하네스 (`_harness.mjs`)**<br>- 브라우저 없이 Node.js에서 Three.js 씬그래프 및 수학 연산 실행<br>- `FakeGL`, `FakeElement`, `doc`, `win` DOM 모킹 |
+| **결함 검사 (Sanity)** | 캡처 이미지 육안 확인 | **1,200 프레임 전수 씬그래프 검사 (`nanScan`)**<br>- 위치/변환 행렬 NaN 검출: **0건**<br>- InstancedMatrix / InstancedColor NaN: **0건**<br>- 지오메트리 누락 및 빈 인스턴스 검출: **0건** |
+| **화면 커버리지 검사** | 없음 | **NDC 화면 투영 감사기 (`_audit.mjs`)**<br>- Additive/Transparent 오브젝트의 카메라 바운딩 구체 계산<br>- NDC 스크린 면적 점유율(`frac`) 수학적 산출로 과노출 방지 |
+| **브라우저 이벤트 자동화** | 없음 | **Chrome DevTools Protocol 러너 (`_cdp.mjs`, `_tune.mjs`)**<br>- WebSocket으로 크롬과 통신하며 드래그, 휠, 키 입력 주입<br>- 프레임 레이트 저하 시 q0 강등 동작 검증 |
+| **산출된 검증 결과물** | 스크린샷 10장 (`shot_s1.png` ~ `shot_s10.png`),<br>DOM 덤프 (`dom_final.html`), 크롬 콘솔 로그 | 검증 스크린샷 30여 장 (`hero-a.png`, `fin1.png`, `gl-a.png`, `t-probe.png` 등),<br>하네스 실행 로그, 실측 씬 통계 데이터 |
