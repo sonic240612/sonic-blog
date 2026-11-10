@@ -115,6 +115,10 @@
   }
   const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
   const SAFE_SCHEME = /^(?:https?:|mailto:|file:|data:image\/)/i;
+  // index.html이 놓인 위치가 사이트 기준점입니다. GitHub Pages처럼 /저장소명/ 아래에 배포돼도 경로가 맞습니다.
+  const SITE_BASE = (() => {
+    try { return new URL('.', location.href).pathname.replace(/\/$/, ''); } catch { return ''; }
+  })();
 
   function safeUrl(url) {
     const value = String(url).trim().replace(/"/g, '&quot;');
@@ -122,8 +126,8 @@
     if (value.startsWith('#')) return value;
     if (SCHEME.test(value)) return SAFE_SCHEME.test(value) ? value : '#';
     if (value.startsWith('//')) return value;
-    // 사이트 루트 기준 경로(/assets/…)는 http에서는 그대로, file://에서는 문서 기준 상대 경로로 바꿉니다.
-    if (value.startsWith('/')) return location.protocol === 'file:' ? value.slice(1) : value;
+    // 사이트 루트 기준 경로(/assets/…)는 index.html 위치 기준으로 고쳐 붙이고, file://에서는 상대 경로로 바꿉니다.
+    if (value.startsWith('/')) return location.protocol === 'file:' ? value.slice(1) : SITE_BASE + value;
     if (!postBase) return value;
     // 상대 경로는 포스트 폴더에서 푼 뒤, 사이트 루트 기준 상대 경로로 되돌립니다.
     try {

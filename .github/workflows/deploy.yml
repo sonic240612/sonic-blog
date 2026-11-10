@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 게시 목록(posts/index.json)과 file:// 미리보기 묶음(posts/posts.js)을 원문에서 다시 만듭니다.
+      - name: Rebuild post index
+        run: node tools/build-posts.mjs
+
+      # 사이트가 실제로 쓰는 파일만 배포 폴더에 담습니다(tools/, README, vercel.json은 올라가지 않습니다).
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp index.html _site/
+          cp blog.css blog.js liquid-glass.css liquid-glass.js liquid-glass-ui.js _site/
+          cp glass-wallpaper.svg glass-wallpaper-scroll.svg _site/
+          cp .nojekyll _site/
+          cp -r assets posts _site/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

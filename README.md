@@ -1,6 +1,6 @@
 # 프로젝트 모음집
 
-**🔗 https://projects-portal-beta.vercel.app**
+**🔗 GitHub Pages:** https://sonic240612.github.io/sonic-blog/ (아래 «GitHub Pages로 배포하기» 참고) · **기존 Vercel:** https://projects-portal-beta.vercel.app
 
 제가 만든 서비스들을 한 번에 확인할 수 있는 포털 페이지입니다.
 
@@ -110,7 +110,7 @@ draft: false             ← 선택. true면 게시 목록에서 빠짐
 | --- | --- |
 | `![설명](photo.png)` | `posts/<slug>/photo.png` |
 | `![설명](../shared.png)` | `posts/shared.png` |
-| `![설명](/assets/…)` | 사이트 루트 기준 (서버·`file://` 모두 동작) |
+| `![설명](/assets/…)` | `index.html`이 있는 사이트 기준 (하위 경로 배포·서버·`file://` 모두 동작) |
 | `![설명](https://…)` | 그대로 외부에서 |
 
 이미지는 `display: block`·`max-width: 100%`로 폭만 맞춰 둥근 모서리로 놓이고 `loading="lazy"`로 늦게 불러오며, 캡션은 그리지 않습니다(`alt`는 대체 텍스트로만 쓰입니다). `![x](javascript:…)` 같은 위험한 경로와 태그 안의 `onerror=`는 예전처럼 무력화됩니다.
@@ -134,3 +134,31 @@ frontmatter에 `demo: bench.html` 한 줄이면 그 HTML이 포스트 본문 안
 
 - 서버로 여는 경우(권장): 사이트 폴더에서 `python -m http.server` 실행 후 `http://localhost:8000` 접속. 포스트는 `posts/<slug>/index.md`(또는 `posts/<slug>.md`)를 바로 읽습니다.
 - `index.html`을 더블클릭해 여는 경우(`file://`)에는 브라우저가 `fetch`를 차단하므로, `posts/posts.js`(위 4단계에서 생성된 미리보기 사본)를 사용합니다. Markdown을 수정한 뒤 사본을 갱신하지 않으면 이전 내용이 보입니다.
+
+## GitHub Pages로 배포하기
+
+GitHub Pages로 배포합니다. 저장소 최상위가 사이트 루트이고 빌드 산출물은 없습니다(정적 파일을 그대로 서빙).
+
+1. GitHub에 새 저장소 `sonic-blog`를 만들고(public) remote를 붙여 push합니다.
+
+   ```bash
+   git remote rename origin projects-portal   # 기존 remote는 그냥 남겨 둡니다
+   git remote add origin https://github.com/sonic240612/sonic-blog.git
+   git push -u origin main
+   ```
+
+2. `.github/workflows/deploy.yml`가 push마다 다음을 합니다.
+   - `node tools/build-posts.mjs`로 `posts/index.json`·`posts/posts.js`를 원문에서 재생성
+   - 사이트가 쓰는 파일만 `_site/`로 조립(`index.html`, CSS 2개, JS 3개, 벽지 SVG 2개, `assets/`, `posts/`, `.nojekyll`)
+   - `actions/upload-pages-artifact` → `actions/deploy-pages`로 배포
+
+   최초 1회는 GitHub → Settings → Pages → **Build source: GitHub Actions**로 지정해 주면 이후 push는 자동으로 배포됩니다.
+
+3. 주소는 `https://sonic240612.github.io/sonic-blog/`입니다. `_site/`에 담지 않은 파일(`README.md`, `tools/`, `vercel.json`, `.github/`)은 사이트로 서빙되지 않습니다.
+
+- **`/sonic-blog/` 하위 경로**: CSS·JS·글·이미지 참조가 전부 상대 경로이고, Markdown에서 `/assets/…`처럼 루트로 쓴 경로도 `blog.js`가 `index.html` 위치(`SITE_BASE`) 기준으로 고쳐 붙입니다. 로컬 `python -m http.server`(루트), 하위 경로 배포, `file://`에서 같은 글이 같은 파일을 불러옵니다.
+- **라우팅**: 주소가 `#/blog/<slug>` 형태라 Pages에서 404 리라이트를 걸 필요가 없습니다. 딥 링크·새로고침·공유 링크가 그대로 동작합니다.
+- **`.nojekyll`**: 저장소 루트에 이 파일이 있어야 Pages가 Jekyll 빌드를 태우지 않습니다. 없으면 `posts/<slug>/index.md`의 frontmatter(`---`)를 Jekyll가 소비하거나 HTML로 바꿔 버려서 원문 fetch가 깨집니다.
+- `posts/posts.js`는 `file://`로 열 때만 쓰이므로 서버 배포에서는 아무것도 하지 않습니다. 서버는 `posts/index.json`과 원문 Markdown을 직접 읽습니다.
+- 사이트 루트에 새 파일(이미지·CSS 등)을 추가하면 워크플로의 "Assemble site" 단계에도 복사 명령을 더해 주어야 배포에 포함됩니다.
+- 커스텀 도메인을 쓰려면 Settings → Pages → Custom domain에 입력하고 저장소에 `CNAME`을 두면 됩니다. 접두사가 `/sonic-blog/`에서 도메인 루트로 바뀌어도 경로 처리는 그대로 맞습니다.
