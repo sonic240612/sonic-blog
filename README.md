@@ -1,4 +1,4 @@
-# 프로젝트 모음집
+# sonic-blog
 
 **🔗 https://sonic240612.github.io/sonic-blog/**
 

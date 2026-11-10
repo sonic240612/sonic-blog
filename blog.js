@@ -580,7 +580,7 @@
 
   function setView(view) {
     body.dataset.view = view;
-    if (view === 'list' && portal().section === 'blog') document.title = 'Blog · My Projects';
+    if (view === 'list' && portal().section === 'blog') document.title = 'Blog · sonic-blog';
     requestTitlebar();
   }
 
