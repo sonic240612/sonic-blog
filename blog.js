@@ -64,6 +64,50 @@
 
   // 렌더링 중인 포스트가 들어 있는 폴더. 본문 안의 상대 이미지·링크를 여기 기준으로 푼니다.
   let postBase = '';
+  const DEMO_MARK = /^ {0,3}\[\[demo\]\][ \t]*\r?\n?/m;
+
+  /* 본문 안의 [[demo]] 자리(또는 맨 위)에 격리된 iframe 데모를 끼웁니다. */
+  function renderBody(post) {
+    postBase = post.base;
+    const frame = demoFrame(post);
+    const body = post.content;
+    if (DEMO_MARK.test(body)) {
+      // 마커가 여러 개면 첫 자리에만 끼우고 나머지는 지웁니다.
+      const pieces = body.split(DEMO_MARK);
+      return pieces.map(part => renderMarkdown(part, post.base)).join(frame);
+    }
+    // 마커가 없으면 본문 맨 위에 데모를 올립니다.
+    return (frame ? frame + renderMarkdown(body, post.base) : renderMarkdown(body, post.base));
+  }
+
+  function demoNotice(src) {
+    return `<p class="post-demo-missing">데모를 열 수 없습니다. <code>${escapeHtml(src)}</code> 은(는) 이 포스트 폴더에 있는 .html 파일이어야 합니다.</p>`;
+  }
+
+  function demoFrame(post) {
+    if (!post.demo) return '';
+    const src = safeUrl(post.demo.src);
+    // 데모는 사이트 안의 HTML 파일만 iframe으로 실행합니다. 나머지는 안내만 남깁니다.
+    if (!src || src === '#' || /^https?:/i.test(src) || !/\.html?$/i.test(src)) return demoNotice(post.demo.src);
+    const height = post.demo.height >= 160 && post.demo.height <= 1600 ? post.demo.height : 460;
+    return `<figure class="post-demo" data-demo-src="${src}">
+  <iframe class="post-demo-frame" src="${src}" title="${escapeHtml(post.demo.label)} — 실행 중인 데모" loading="lazy" style="--demo-height:${height}px" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock"></iframe>
+  <figcaption class="post-demo-bar"><span class="post-demo-label">실행 중 · 격리된 창</span><a class="post-demo-open" href="${src}" target="_blank" rel="noopener">새 창에서 열기</a></figcaption>
+</figure>`;
+  }
+
+  /* 데모 파일이 실제로 있는지 확인해, 없는 경우 프레임 대신 안내로 바꿉니다(file://은 fetch가 막혀 건너뜁니다). */
+  function verifyDemo(post) {
+    if (location.protocol === 'file:') return;
+    const figure = postBody.querySelector('.post-demo[data-demo-src]');
+    if (!figure) return;
+    fetch(figure.getAttribute('data-demo-src'), { method: 'HEAD', cache: 'no-store' })
+      .then(response => {
+        if (response.ok || !postBody.contains(figure)) return;
+        figure.outerHTML = demoNotice(post.demo.src);
+      })
+      .catch(() => {});
+  }
   const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
   const SAFE_SCHEME = /^(?:https?:|mailto:|file:|data:image\/)/i;
 
@@ -319,6 +363,7 @@
     if (meta.title) content = content.replace(/^ {0,3}#\s+.+\r?\n?/, '');
     const tags = Array.isArray(meta.tags) ? meta.tags : (meta.tags ? String(meta.tags).split(/[,\s]+/).filter(Boolean) : []);
     const date = meta.date || meta.updated || '';
+    const height = Number.parseInt(meta.demo_height, 10);
     return {
       file,
       slug,
@@ -327,6 +372,9 @@
       date,
       tags,
       summary: meta.summary || '',
+      // 데모는 포스트 폴더 안의 HTML 파일. iframe으로 격리해 실행합니다.
+      demo: meta.demo ? { src: String(meta.demo), height: Number.isFinite(height) ? height : 0, label: meta.demo_title || title } : null,
+      draft: /^(?:1|true|yes)$/i.test(String(meta.draft || '')),
       content
     };
   }
@@ -348,14 +396,14 @@
     // file:// 로 여는 미리보기에서는 fetch가 차단되므로 생성된 사본(posts/posts.js)을 씁니다.
     if (location.protocol === 'file:') {
       await loadScript(BUNDLE);
-      return (window.portalPosts || []).map(entry => buildPost(entry.file, entry.content));
+      return (window.portalPosts || []).map(entry => buildPost(entry.file, entry.content)).filter(post => !post.draft);
     }
     const files = await (await fetch(INDEX, { cache: 'no-store' })).json();
     const loaded = await Promise.all(files.map(file => loadPost(file).catch(error => {
       console.warn('포스트를 읽을 수 없습니다:', error);
       return null;
     })));
-    return loaded.filter(Boolean);
+    return loaded.filter(Boolean).filter(post => !post.draft);
   }
 
   const colorsFor = post => {
@@ -466,7 +514,8 @@
       }
       postTags.appendChild(item);
     });
-    postBody.innerHTML = renderMarkdown(post.content, post.base);
+    postBody.innerHTML = renderBody(post);
+    verifyDemo(post);
     renderPostNav(post);
     document.title = post.title + ' · Blog';
   }

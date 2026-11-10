@@ -289,6 +289,50 @@ body[data-view="post"] .glass-intro { display: none; }
   border-radius: 14px;
 }
 
+/* 실행되는 데모 — 포스트 폴더의 HTML 파일을 격리된 iframe으로 본문에 끼웁니다. */
+.post-demo {
+  margin: 28px 0;
+  border: 1px solid var(--prose-rule);
+  border-radius: 18px;
+  background: var(--prose-panel);
+  overflow: hidden;
+}
+.post-demo-frame {
+  display: block;
+  width: 100%;
+  height: var(--demo-height, 460px);
+  border: 0;
+  background: #ffffff;
+}
+.post-demo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--prose-rule);
+  background: var(--prose-soft);
+  font-size: 0.7rem;
+}
+.post-demo-label {
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+.post-demo-open {
+  padding: 5px 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 620;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.2s;
+}
+.post-demo-open:hover { border-color: var(--accent); }
+.post-demo-missing { color: var(--text-secondary); }
+[data-theme="liquid-glass"][data-mode="dark"] .post-demo-frame { background: #14161a; }
+
 @media (max-width: 640px) {
   .post { gap: 16px; }
   .post-titlebar-glass { padding: 8px 14px; }
@@ -298,4 +342,8 @@ body[data-view="post"] .glass-intro { display: none; }
   .post-eyebrow, .post-title, .post-tags { grid-column: 1; }
   .prose { font-size: 0.9rem; }
   .post-art-glyph { width: 74px; height: 74px; }
+  .post-demo { margin: 22px 0; }
+  /* 긴 데모가 화면을 통째로 덮지 않도록 모바일에서는 높이를 줄입니다. */
+  .post-demo-frame { height: min(var(--demo-height, 460px), 68vh); }
+  .post-demo-bar { padding: 9px 12px; gap: 8px; }
 }

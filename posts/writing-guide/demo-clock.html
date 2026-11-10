@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>데모 예시 — 캔버스 시계</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --ink: #1b1d22;
+      --line: rgba(20, 26, 36, 0.14);
+      --accent: #5a32d1;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #15171c; --ink: #eceef3; --line: rgba(255, 255, 255, 0.16); --accent: #a78bfa; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--ink);
+      font: 13px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    canvas { width: 148px; height: 148px; }
+    .panel { display: grid; gap: 10px; max-width: 300px; }
+    .panel p { margin: 0; }
+    button {
+      justify-self: start;
+      padding: 9px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); color: var(--accent); }
+    output { font-variant-numeric: tabular-nums; }
+    .probe { font-size: 12px; color: color-mix(in srgb, var(--ink) 62%, transparent); }
+  </style>
+</head>
+<body>
+  <canvas id="clock" width="300" height="300" aria-label="현재 시각을 가리키는 아날로그 시계"></canvas>
+  <div class="panel">
+    <strong>이 시계는 본문 안에서 돌아갑니다</strong>
+    <p>iframe 안에 격리되어 바깥 페이지에는 손댈 수 없지만, 캔버스·버튼·`requestAnimationFrame`은 그대로 동작합니다.</p>
+    <button id="count" type="button">클릭 <output id="tally">0</output></button>
+    <p class="probe" id="probe">저장소 확인 중…</p>
+  </div>
+  <script>
+    const canvas = document.getElementById('clock');
+    const g = canvas.getContext('2d');
+    const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const ink = css('--ink'), accent = css('--accent'), line = css('--line');
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = canvas.height = 300 * dpr;
+    g.scale(dpr, dpr);
+
+    const hand = (angle, length, width, color) => {
+      g.save();
+      g.translate(150, 150);
+      g.rotate(angle);
+      g.strokeStyle = color;
+      g.lineWidth = width;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(0, -14);
+      g.lineTo(0, length);
+      g.stroke();
+      g.restore();
+    };
+
+    const draw = () => {
+      const now = new Date();
+      const s = now.getSeconds() + now.getMilliseconds() / 1000;
+      const m = now.getMinutes() + s / 60;
+      const h = now.getHours() % 12 + m / 60;
+      g.clearRect(0, 0, 300, 300);
+      g.strokeStyle = line;
+      g.lineWidth = 2;
+      g.beginPath();
+      g.arc(150, 150, 120, 0, Math.PI * 2);
+      g.stroke();
+      for (let i = 0; i < 12; i++) {
+        const a = i * Math.PI / 6;
+        g.beginPath();
+        g.moveTo(150 + Math.cos(a) * 111, 150 + Math.sin(a) * 111);
+        g.lineTo(150 + Math.cos(a) * 120, 150 + Math.sin(a) * 120);
+        g.stroke();
+      }
+      hand(h / 12 * Math.PI * 2, -62, 7, ink);
+      hand(m / 60 * Math.PI * 2, -92, 4, ink);
+      hand(s / 60 * Math.PI * 2, -104, 2, accent);
+      requestAnimationFrame(draw);
+    };
+    draw();
+
+    let clicks = 0;
+    document.getElementById('count').addEventListener('click', () => {
+      document.getElementById('tally').textContent = String(++clicks);
+    });
+
+    const probe = document.getElementById('probe');
+    try {
+      localStorage.setItem('probe', 'ok');
+      localStorage.removeItem('probe');
+      probe.textContent = '저장소 사용 가능 — 이 데모가 사이트와 같은 출처로 열려 있습니다.';
+    } catch {
+      probe.textContent = '저장소 차단됨 (정상) — 격리된 창에서는 localStorage·쿠키를 쓸 수 없습니다.';
+    }
+  </script>
+</body>
+</html>
