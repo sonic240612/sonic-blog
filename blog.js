@@ -1,4 +1,4 @@
-/* 실험 기록(Blog) — 게시 목록(posts/index.json)에 적힌 Markdown을 가져와 렌더링합니다.
+/* 기록(Blog) — 게시 목록(posts/index.json)에 적힌 Markdown을 가져와 렌더링합니다.
    본문과 이미지는 한 폴더에 둘 수 있습니다: posts/<slug>/index.md (+ posts/<slug>/photo.png).
    목록은 `node tools/build-posts.mjs`가 폴더를 훑어 갱신합니다.
    외부 라이브러리 없이 frontmatter와 마크다운 부분집합을 HTML로 바꿉니다. */
@@ -477,8 +477,8 @@
     const fragment = document.createDocumentFragment();
     list.forEach(post => fragment.appendChild(renderCard(post)));
     grid.appendChild(fragment);
-    if (!posts) showStatus('실험 기록을 불러오는 중…');
-    else if (loadFailed) showStatus('실험 기록을 불러오지 못했습니다. 게시 목록(posts/index.json)과 Markdown 파일을 확인하세요.');
+    if (!posts) showStatus('기록을 불러오는 중…');
+    else if (loadFailed) showStatus('기록을 불러오지 못했습니다. 게시 목록(posts/index.json)과 Markdown 파일을 확인하세요.');
     else if (!list.length) showStatus(posts.length ? '이 태그의 기록이 없습니다.' : '아직 게시된 기록이 없습니다.');
     else showStatus('');
   }
@@ -634,7 +634,7 @@
         return;
       }
       const slug = route[1] ? decodeURIComponent(route[1]) : '';
-      if (!posts) { setView('list'); showStatus('실험 기록을 불러오는 중…'); return; }
+      if (!posts) { setView('list'); showStatus('기록을 불러오는 중…'); return; }
       if (slug) openPost(slug);
       else {
         setView('list');
@@ -706,7 +706,7 @@
     try {
       posts = await loadPosts();
     } catch (error) {
-      console.warn('실험 기록을 불러오지 못했습니다:', error);
+      console.warn('기록을 불러오지 못했습니다:', error);
       posts = [];
       loadFailed = true;
     }
