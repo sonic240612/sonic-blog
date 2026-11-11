@@ -216,29 +216,39 @@
    글자는 칸이 좁아지기 전에 먼저 사라져야 아이콘 위에 겹치지 않습니다. */
 [data-theme="liquid-glass"].glass-compact :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) .tab-btn { min-height: 42px; gap: 0; }
 [data-theme="liquid-glass"].glass-compact .tab-label { max-height: 0; opacity: 0; transform: translateY(-3px); overflow: hidden; transition: max-height .4s cubic-bezier(.2,.8,.2,1), opacity .07s linear, transform .25s; }
+/* 스크롤을 아래로 밀면 조작 계층(GitHub·테마 단추, 필터·정렬·포스트 바)이 화면 밖으로 물러납니다.
+   위로 스크롤하면 glass-tuck가 꺼지며 제자리로 돌아오고, 읽는 중인 제목 알약만 그 자리에 남습니다. */
+[data-theme="liquid-glass"] :is(header, .section-control, .category-control, .tag-control, .post-control, .sort-control) {
+  transition: transform .42s cubic-bezier(.2,.8,.2,1), opacity .26s, box-shadow .3s, visibility 0s;
+}
+[data-theme="liquid-glass"].glass-tuck :is(header, .section-control, .category-control, .tag-control, .post-control, .sort-control) {
+  opacity: 0;
+  visibility: hidden;
+  transition: transform .42s cubic-bezier(.2,.8,.2,1), opacity .2s, box-shadow .3s, visibility 0s .42s;
+}
+/* PC: 머리 단추와 탭 바의 모든 그룹이 화면 위로 밀려 나갑니다. */
+@media (min-width: 641px) {
+  [data-theme="liquid-glass"].glass-tuck header { transform: translateY(calc(-100% - 70px - var(--safe-area-top))); }
+  [data-theme="liquid-glass"].glass-tuck .tabs > :is(.section-control, .category-control, .tag-control, .post-control, .sort-control) { transform: translateY(-330px); }
+}
 /* 포스트를 읽을 때 되돌아가기·원문 단추를 정렬 단추가 있던 오른쪽 칸에 둡니다. */
 [data-theme="liquid-glass"] .post-control { display: flex; align-items: center; gap: 8px; }
 [data-theme="liquid-glass"] .post-control[hidden] { display: none; }
-/* 제목 고정 바는 탭 바 안쪽, 좌우 단추 사이 가운데에 얹습니다.
-   좌우 칸 폭은 JS가 단추 가장자리에서 재고, 제목이 길면 알약이 위아래로 늘어납니다. */
+/* 읽는 중인 제목은 화면에 고정되는 띠입니다. PC에서는 알약이 화면 최상단 한가운데에 앉고,
+   phones에서는 아래 독 자리로 내려갑니다(아래 media 블록이 자리를 바꿉니다). */
 [data-theme="liquid-glass"] .post-titlebar {
-  position: absolute;
-  left: var(--titlebar-left, 210px);
-  right: var(--titlebar-right, 230px);
-  top: 50%;
-  transform: translateY(-50%);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: calc(12px + var(--safe-area-top));
   display: flex;
   justify-content: center;
   pointer-events: none;
-  z-index: 4;
+  z-index: 19;
 }
-/* 좌우 단추 사이가 좁아지면 알약을 탭 바 아래 가운데로 내립니다. */
-[data-theme="liquid-glass"] .post-titlebar.is-below {
-  left: 0;
-  right: 0;
-  top: calc(100% + 8px);
-  transform: none;
-  justify-content: center;
+@media (min-width: 641px) {
+  /* 알약 폭은 위 양쪽 둥근 단추들끼리 부딪히지 않게만 제한합니다. */
+  [data-theme="liquid-glass"] .post-titlebar-glass { max-width: min(560px, calc(100vw - 330px)); }
 }
 /* 정렬 단추는 다른 탭과 같은 뼈대(.tab-btn)를 쓰므로 위 규칙대로 58px → 42px로 늘어났다 줄어듭니다. */
 [data-theme="liquid-glass"] .selection-lens {
@@ -359,14 +369,19 @@
     box-shadow: 0 12px 30px rgb(15 23 42 / .16), var(--surface-shadow);
   }
   [data-theme="liquid-glass"] .tag-control::-webkit-scrollbar { display: none; }
-  /* 포스트를 읽을 때 남는 제목 알약도 같은 자리에 뜹니다(목록 화면에서는 감겨 있습니다).
-     .is-below보다 이겨야 하므로 두 이름을 한꺼번에 잡습니다. */
-  [data-theme="liquid-glass"] :is(.post-titlebar, .post-titlebar.is-below) {
+  /* 포스트를 읽을 때 남는 제목 알약도 같은 독 자리에 뜹니다(목록 화면에서는 감겨 있습니다). */
+  [data-theme="liquid-glass"] .post-titlebar {
     position: fixed; left: 16px; right: 16px; top: auto;
     bottom: calc(14px + var(--safe-area-bottom));
     transform: none; justify-content: center; z-index: 18;
   }
   [data-theme="liquid-glass"] [data-liquid-surface].post-titlebar-glass { box-shadow: 0 12px 30px rgb(15 23 42 / .16), var(--surface-shadow); }
+  /* 모바일에서는 머리 단추와 위 탭 바가 위로, 바닥 독(필터 바)은 아래로 물러납니다. */
+  [data-theme="liquid-glass"].glass-tuck header { transform: translateY(calc(-100% - 56px - var(--safe-area-top))); }
+  [data-theme="liquid-glass"].glass-tuck .tabs > :is(.section-control, .sort-control) { transform: translateY(-230px); }
+  [data-theme="liquid-glass"].glass-tuck :is(.category-control, .tag-control) {
+    transform: translateY(calc(100% + 44px + var(--safe-area-bottom)));
+  }
   /* 바닥 독 뒤로 내용이 남지 않게 페이지 끝에 여백을 더합니다. */
   [data-theme="liquid-glass"] .glass-footer { margin-bottom: calc(110px + var(--safe-area-bottom)); }
   [data-theme="liquid-glass"] main { margin: 20px 16px 0; }

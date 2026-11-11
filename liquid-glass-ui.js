@@ -309,8 +309,13 @@
       scrollTravel = Math.sign(delta) === Math.sign(scrollTravel) ? scrollTravel + delta : delta;
       previousScroll = y;
       body.classList.toggle('glass-scrolled', y > 40);
-      if (y < 120 || states.some(state => state.drag)) body.classList.remove('glass-compact');
-      else if (Math.abs(scrollTravel) > 8) body.classList.toggle('glass-compact', scrollTravel > 0);
+      /* glass-compact는 단추를 줄이는 상태, glass-tuck는 조작 계층을 화면 밖으로 완전히 물리는 상태입니다.
+         아래로 밀면 두 상태가 함께 켜지고, 위로 올리면 둘 다 꺼져 단추가 제자리로 돌아옵니다. */
+      if (y < 120 || states.some(state => state.drag)) body.classList.remove('glass-compact', 'glass-tuck');
+      else if (Math.abs(scrollTravel) > 8) {
+        body.classList.toggle('glass-compact', scrollTravel > 0);
+        body.classList.toggle('glass-tuck', scrollTravel > 0);
+      }
     });
   }, { passive: true });
 
@@ -322,8 +327,11 @@
     stopCardAnimations();
     previousScroll = window.scrollY;
     scrollTravel = 0;
-    if (!active()) body.classList.remove('glass-compact', 'glass-scrolled');
-    else body.classList.toggle('glass-scrolled', window.scrollY > 40);
+    if (!active()) body.classList.remove('glass-compact', 'glass-scrolled', 'glass-tuck');
+    else {
+      body.classList.toggle('glass-scrolled', window.scrollY > 40);
+      if (window.scrollY < 120) body.classList.remove('glass-compact', 'glass-tuck');
+    }
     refresh(true);
   }
 

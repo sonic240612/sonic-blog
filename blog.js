@@ -553,23 +553,10 @@
   function syncTitlebar() {
     titlebarFrame = 0;
     if (!tabsBar) return;
-    const bar = tabsBar.getBoundingClientRect();
-    const leftGroup = document.querySelector('.section-control');
-    const rightGroup = document.querySelector('.post-control:not([hidden])') || document.querySelector('.sort-control:not([hidden])');
-    const left = leftGroup ? Math.round(leftGroup.getBoundingClientRect().right - bar.left + 18) : 18;
-    const right = rightGroup ? Math.round(bar.right - rightGroup.getBoundingClientRect().left + 18) : 18;
-    const room = Math.round(bar.width - left - right);
-    if (room < 200) {
-      titlebar.classList.add('is-below');
-      tabsBar.style.setProperty('--titlebar-left', '0px');
-      tabsBar.style.setProperty('--titlebar-right', '0px');
-    } else {
-      titlebar.classList.remove('is-below');
-      tabsBar.style.setProperty('--titlebar-left', left + 'px');
-      tabsBar.style.setProperty('--titlebar-right', right + 'px');
-    }
+    /* 알약은 화면에 고정되므로 좌우 칸을 재지 않습니다.
+       포스트 머리글이 스크롤로 탭 바 위로 올라간 뒤에 나타난니다. */
     if (body.dataset.view !== 'post') { titlebar.classList.remove('is-shown'); return; }
-    titlebar.classList.toggle('is-shown', postHeader.getBoundingClientRect().bottom <= bar.bottom);
+    titlebar.classList.toggle('is-shown', postHeader.getBoundingClientRect().bottom <= tabsBar.getBoundingClientRect().bottom);
   }
   // 탭 바가 줄어드는 애니메이션이 끝난 뒤에 한 번 더 재야 정확히 붙습니다.
   function requestTitlebar() {
