@@ -306,6 +306,10 @@
 [data-theme="liquid-glass"][data-mode="dark"].glass-scrolled [data-liquid-surface] { --glass-fill: rgba(24,26,32,.55); }
 /* 본문 글자 위에 얹히는 제목 고정 바는 유리를 한 겹 더 짙게 세웁니다. */
 [data-theme="liquid-glass"] .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 92%, transparent); border-radius: 18px; }
+/* 유리 채움이 이미 90% 이상 불투명해서 배경을 흐리게 접는 굴절은 거의 눈에 띄지 않습니다.
+   iOS Safari는 고정된 판의 backdrop-filter 레이어 위에서 글자를 드랍하는 일이 있으니
+   이 판만 굴절을 끕니다. 렌즈는 inline으로 들어오므로 !important로 묶습니다. */
+[data-theme="liquid-glass"] .post-titlebar-glass { --liquid-filter: none !important; }
 [data-theme="liquid-glass"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
 [data-theme="liquid-glass"][data-mode="dark"].glass-scrolled .post-titlebar-glass { --glass-fill: color-mix(in srgb, var(--card-bg) 90%, transparent); }
 
