@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="pi-tele-title">
+  <title id="pi-tele-title">pi-telegram — bridge pi coding agent to Telegram</title>
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="pt-bg" x1="16" y1="8" x2="112" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2bb7f5"/>
+      <stop offset=".48" stop-color="#229ed9"/>
+      <stop offset="1" stop-color="#1472b2"/>
+    </linearGradient>
+    
+    <!-- Squircle Rim Highlight -->
+    <linearGradient id="pt-rim" x1="64" y1="2" x2="64" y2="126" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".15"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".35"/>
+    </linearGradient>
+
+    <!-- Glass Capsule / Radar Ring -->
+    <linearGradient id="pt-glass" x1="32" y1="32" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".05"/>
+    </linearGradient>
+
+    <!-- Paper Plane Main Body Gradient -->
+    <linearGradient id="pt-wing-left" x1="40" y1="40" x2="85" y2="75" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e1f3fc"/>
+    </linearGradient>
+    
+    <!-- Paper Plane Shadow/Fold -->
+    <linearGradient id="pt-fold" x1="58" y1="70" x2="74" y2="86" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b6e2f8"/>
+      <stop offset="1" stop-color="#93cde9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="2" y="2" width="124" height="124" rx="29" fill="url(#pt-bg)"/>
+
+  <!-- Bridge Orbit / Soundwaves / Rings -->
+  <circle cx="64" cy="64" r="44" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity=".18" stroke-dasharray="4 4"/>
+  <circle cx="64" cy="64" r="34" fill="url(#pt-glass)" stroke="#ffffff" stroke-width="1" stroke-opacity=".25"/>
+
+  <!-- Connection / Flight Trail Dots -->
+  <g fill="#ffffff" opacity=".6">
+    <circle cx="34" cy="78" r="2"/>
+    <circle cx="42" cy="74" r="2.5"/>
+    <circle cx="51" cy="71" r="3"/>
+  </g>
+
+  <!-- Paper Plane Shadow -->
+  <path d="M96 34 L38 64 L58 78 L63 93 L73 83 L96 34 Z" fill="#0c4f7a" opacity=".28" transform="translate(0 3)"/>
+
+  <!-- Paper Plane Geometry -->
+  <!-- Left Wing (Top perspective) -->
+  <path d="M96 34 L38 64 L58 78 L96 34 Z" fill="url(#pt-wing-left)"/>
+  
+  <!-- Right Wing (Far side) -->
+  <path d="M96 34 L58 78 L79 81 L96 34 Z" fill="#cbe8f8"/>
+  
+  <!-- Center Keel / Bottom Fold -->
+  <path d="M58 78 L65 91 L72 82 Z" fill="url(#pt-fold)"/>
+  
+  <!-- Inner Crease Line -->
+  <path d="M58 78 L96 34" stroke="#d5edf9" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Stylized Pi (π) Badge in Upper Left -->
+  <g transform="translate(24, 22)">
+    <rect width="28" height="24" rx="7" fill="#0d5b8c" opacity=".35"/>
+    <rect width="28" height="24" rx="7" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity=".3"/>
+    <path d="M6 7.5 Q 14 6.5, 22 7" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M10 7.5 L9.5 17 Q 9.5 18, 7.5 18" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M17.5 7.5 L17.5 16 Q 17.5 18, 20.5 18" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkle Signal at nose of the plane -->
+  <path d="m97 27 2 4.5 4.5 2-4.5 2-2 4.5-2-4.5-4.5-2 4.5-2Z" fill="#ffffff" opacity=".9"/>
+  <circle cx="106" cy="40" r="1.5" fill="#ffffff" opacity=".7"/>
+
+  <!-- Squircle Rim Highlight -->
+  <rect x="2.75" y="2.75" width="122.5" height="122.5" rx="28.25" fill="none" stroke="url(#pt-rim)" stroke-width="1.5"/>
+</svg>
