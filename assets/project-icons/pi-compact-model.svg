@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="pcm-title">
+  <title id="pcm-title">pi-compact-model — run Pi context compaction on a dedicated model</title>
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="pcm-bg" x1="16" y1="8" x2="112" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4f46e5"/>
+      <stop offset=".5" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1e40af"/>
+    </linearGradient>
+
+    <!-- Squircle Rim Highlight -->
+    <linearGradient id="pcm-rim" x1="64" y1="2" x2="64" y2="126" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".15"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".35"/>
+    </linearGradient>
+
+    <!-- Glass Overlay -->
+    <linearGradient id="pcm-glass" x1="30" y1="30" x2="98" y2="98" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".04"/>
+    </linearGradient>
+
+    <!-- Core Glow Gradient -->
+    <linearGradient id="pcm-core" x1="45" y1="50" x2="83" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+
+    <!-- Compaction Arrow Gradient -->
+    <linearGradient id="pcm-arrow-down" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="pcm-arrow-up" x1="0" y1="1" x2="0" y2="0">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="2" y="2" width="124" height="124" rx="29" fill="url(#pcm-bg)"/>
+
+  <!-- Radial grid / background orbit -->
+  <circle cx="64" cy="64" r="44" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity=".15" stroke-dasharray="3 4"/>
+  <circle cx="64" cy="64" r="32" fill="url(#pcm-glass)" stroke="#ffffff" stroke-width="1" stroke-opacity=".25"/>
+
+  <!-- Stylized Pi (π) Badge in Upper Left -->
+  <g transform="translate(22, 20)">
+    <rect width="26" height="22" rx="6" fill="#1e1b4b" opacity=".4"/>
+    <rect width="26" height="22" rx="6" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity=".35"/>
+    <!-- Pi symbol (π) -->
+    <path d="M5.5 7 Q 13 6, 20.5 6.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M9.5 7 L9 15.5 Q 9 16.5, 7.5 16.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M16 7 L16 15 Q 16 16.5, 18.5 16.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Secondary dedicated model badge in Upper Right -->
+  <g transform="translate(80, 20)">
+    <rect width="26" height="22" rx="6" fill="#0284c7" opacity=".45"/>
+    <rect width="26" height="22" rx="6" fill="none" stroke="#38bdf8" stroke-width="1" stroke-opacity=".5"/>
+    <!-- Spark / Fast Lightning icon for dedicated fast compact model -->
+    <path d="m14 4-5 8h5l-2 7 7-9h-5l2-6Z" fill="#38bdf8"/>
+  </g>
+
+  <!-- Dynamic link path between Session Model and Compact Model -->
+  <path d="M48 31 Q 64 36, 80 31" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2 3" opacity=".8"/>
+
+  <!-- Center: Compaction Mechanism (Two inward compressing plates + condensed core) -->
+  <!-- Top Plate (Pushing Down) -->
+  <g transform="translate(36, 42)">
+    <rect width="56" height="6" rx="3" fill="#ffffff" opacity=".95"/>
+    <path d="m28 14-6-6h12z" fill="url(#pcm-arrow-down)"/>
+  </g>
+
+  <!-- Bottom Plate (Pushing Up) -->
+  <g transform="translate(36, 80)">
+    <rect width="56" height="6" rx="3" fill="#ffffff" opacity=".95"/>
+    <path d="m28 -8-6 6h12z" fill="url(#pcm-arrow-up)"/>
+  </g>
+
+  <!-- Condensed Structured Summary Core (Middle) -->
+  <!-- Outer Glow Box -->
+  <rect x="42" y="55" width="44" height="18" rx="6" fill="url(#pcm-core)"/>
+  <rect x="42" y="55" width="44" height="18" rx="6" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity=".6"/>
+  <!-- Code summary lines inside the condensed core -->
+  <path d="M48 61 h16 M48 67 h28 M70 61 h10" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".95"/>
+
+  <!-- Compression spark dots -->
+  <circle cx="34" cy="64" r="2" fill="#38bdf8" opacity=".9"/>
+  <circle cx="94" cy="64" r="2" fill="#c084fc" opacity=".9"/>
+  <circle cx="28" cy="64" r="1.2" fill="#ffffff" opacity=".6"/>
+  <circle cx="100" cy="64" r="1.2" fill="#ffffff" opacity=".6"/>
+
+  <!-- Squircle Rim Highlight -->
+  <rect x="2.75" y="2.75" width="122.5" height="122.5" rx="28.25" fill="none" stroke="url(#pcm-rim)" stroke-width="1.5"/>
+</svg>
